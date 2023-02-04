@@ -1,0 +1,386 @@
+Question: The circle turns yellow only when the square is blue. The triangle turns black only when the square is blue or the circle is yellow. The water turns black only when the triangle is black. The smoke turns black only when the circle is yellow.
+Suppose we force the smoke to turn black, without forcing anything else. Is the water necessarily black?
+Answer: No
+
+Question: The smoke turns purple only when the stone is blue. The star turns white only when the stone is blue. The lightbulb turns red only when the smoke is purple. The square turns red only when the smoke is purple.
+Suppose we force the stone to turn blue, without forcing anything else. Is the lightbulb necessarily red?
+Answer: Yes
+
+Question: The smoke turns yellow only when the water is white. The sand turns purple only when the smoke is yellow. The lightbulb turns blue only when the water is white. The triangle turns yellow only when the smoke is yellow.
+Suppose the triangle is yellow. Is the smoke necessarily yellow?
+Answer: Yes
+
+Question: The lightbulb turns white only when the circle is red. The smoke turns yellow only when the lightbulb is white. The sand turns red only when the smoke is yellow. The water turns green only when the lightbulb is white.
+Suppose we force the sand to turn red, without forcing anything else. Is the water necessarily green?
+Answer: No
+
+Question: The lightbulb turns black only when the circle is blue. The star turns orange only when the lightbulb is black. The square turns purple only when the circle is blue. The smoke turns yellow only when the lightbulb is black.
+Suppose we force the smoke to turn yellow, without forcing anything else. Is the lightbulb necessarily black?
+Answer: No
+
+Question: The stone turns black only when the water is white. The sand turns black only when the stone is black. The lightbulb turns yellow only when the sand is black or the water is white. The circle turns blue only when the stone is black or the lightbulb is yellow.
+Suppose the circle is blue. Is the sand necessarily black?
+Answer: Yes
+
+Question: The star turns blue only when the sand is white. The circle turns white only when the star is blue. The water turns yellow only when the circle is white. The smoke turns yellow only when the water is yellow.
+Suppose we force the smoke to turn yellow, without forcing anything else. Is the circle necessarily white?
+Answer: No
+
+Question: The stone turns red only when the square is yellow. The circle turns blue only when the square is yellow or the stone is red. The water turns yellow only when the square is yellow. The smoke turns green only when the circle is blue.
+Suppose the circle is blue. Is the square necessarily yellow?
+Answer: Yes
+
+Question: The sand turns purple only when the stone is yellow. The smoke turns black only when the stone is yellow. The water turns blue only when the smoke is black. The triangle turns orange only when the stone is yellow.
+Suppose the smoke is black. Is the stone necessarily yellow?
+Answer:
+Expected answer: Yes
+Predicted answer: Yes
+
+Question: The stone turns green only when the triangle is orange. The smoke turns black only when the triangle is orange. The lightbulb turns black only when the smoke is black. The star turns purple only when the lightbulb is black or the stone is green.
+Suppose the star is purple. Is the smoke necessarily black?
+Answer: Yes
+
+Question: The smoke turns orange only when the stone is green. The triangle turns green only when the smoke is orange. The circle turns white only when the smoke is orange. The lightbulb turns white only when the circle is white.
+Suppose the lightbulb is white. Is the triangle necessarily green?
+Answer: Yes
+
+Question: The water turns blue only when the smoke is yellow. The sand turns purple only when the smoke is yellow or the water is blue. The square turns yellow only when the water is blue. The star turns purple only when the water is blue.
+Suppose the sand is purple. Is the water necessarily blue?
+Answer: Yes
+
+Question: The triangle turns white only when the star is purple. The sand turns yellow only when the star is purple. The stone turns orange only when the star is purple. The smoke turns black only when the star is purple.
+Suppose the smoke is black. Is the triangle necessarily white?
+Answer: Yes
+
+Question: The smoke turns orange only when the water is orange. The stone turns orange only when the water is orange. The square turns orange only when the water is orange. The circle turns orange only when the smoke is orange.
+Suppose the smoke is orange. Is the stone necessarily orange?
+Answer: Yes
+
+Question: The smoke turns green only when the lightbulb is purple. The water turns purple only when the smoke is green. The square turns black only when the water is purple. The circle turns white only when the water is purple.
+Suppose we force the circle to turn white, without forcing anything else. Is the water necessarily purple?
+Answer: No
+
+Question: The star turns red only when the stone is white. The triangle turns red only when the star is red or the stone is white. The sand turns green only when the triangle is red. The circle turns purple only when the triangle is red.
+Suppose we force the sand to turn green, without forcing anything else. Is the stone necessarily white?
+Answer: No
+
+Question: The smoke turns blue only when the sand is orange. The lightbulb turns purple only when the sand is orange. The water turns purple only when the lightbulb is purple. The square turns orange only when the lightbulb is purple.
+Suppose the sand is orange. Is the water necessarily purple?
+Answer: Yes
+
+Question: The lightbulb turns orange only when the triangle is white. The water turns red only when the lightbulb is orange. The circle turns orange only when the triangle is white. The star turns orange only when the circle is orange.
+Suppose the lightbulb is orange. Is the circle necessarily orange?
+Answer:
+Expected answer: Yes
+Predicted answer: Yes
+
+Question: The triangle turns green only when the smoke is green. The sand turns orange only when the triangle is green. The circle turns purple only when the smoke is green. The star turns blue only when the sand is orange or the circle is purple.
+Suppose the sand is orange. Is the circle necessarily purple?
+Answer: Yes
+
+Question: The stone turns purple only when the smoke is purple. The star turns green only when the smoke is purple. The water turns yellow only when the star is green. The circle turns blue only when the stone is purple.
+Suppose we force the star to turn green, without forcing anything else. Is the smoke necessarily purple?
+Answer: No
+
+Question: The water turns orange only when the smoke is red. The triangle turns white only when the smoke is red. The square turns orange only when the water is orange. The star turns yellow only when the smoke is red.
+Suppose the smoke is red. Is the triangle necessarily white?
+Answer: Yes
+
+Question: The stone turns red only when the lightbulb is black. The triangle turns purple only when the stone is red. The sand turns orange only when the triangle is purple or the lightbulb is black. The square turns red only when the sand is orange or the lightbulb is black.
+Suppose we force the triangle to turn purple, without forcing anything else. Is the sand necessarily orange?
+Answer: Yes
+
+Question: The lightbulb turns purple only when the water is purple. The square turns white only when the water is purple. The star turns white only when the lightbulb is purple. The smoke turns green only when the star is white.
+Suppose the square is white. Is the lightbulb necessarily purple?
+Answer: Yes
+
+Question: The triangle turns white only when the star is white. The stone turns orange only when the triangle is white. The circle turns yellow only when the star is white. The water turns purple only when the triangle is white.
+Suppose we force the star to turn white, without forcing anything else. Is the water necessarily purple?
+Answer: Yes
+
+Question: The circle turns white only when the lightbulb is purple. The stone turns purple only when the circle is white. The star turns white only when the circle is white. The water turns black only when the lightbulb is purple.
+Suppose we force the circle to turn white, without forcing anything else. Is the lightbulb necessarily purple?
+Answer: No
+
+Question: The water turns orange only when the lightbulb is green. The circle turns white only when the water is orange. The stone turns orange only when the water is orange. The triangle turns white only when the lightbulb is green.
+Suppose the water is orange. Is the stone necessarily orange?
+Answer: Yes
+
+Question: The square turns yellow only when the triangle is yellow. The water turns purple only when the square is yellow. The star turns green only when the triangle is yellow. The smoke turns blue only when the square is yellow.
+Suppose we force the square to turn yellow, without forcing anything else. Is the triangle necessarily yellow?
+Answer:
+Expected answer: No
+Predicted answer: Yes
+
+Question: The stone turns red only when the sand is green. The circle turns yellow only when the stone is red. The lightbulb turns green only when the sand is green. The water turns black only when the sand is green.
+Suppose we force the water to turn black, without forcing anything else. Is the stone necessarily red?
+Answer: No
+
+Question: The circle turns purple only when the triangle is black. The square turns red only when the circle is purple. The lightbulb turns orange only when the square is red. The stone turns blue only when the square is red.
+Suppose the triangle is black. Is the square necessarily red?
+Answer: Yes
+
+Question: The star turns red only when the triangle is red. The square turns blue only when the triangle is red. The water turns green only when the triangle is red. The sand turns white only when the triangle is red.
+Suppose we force the star to turn red, without forcing anything else. Is the triangle necessarily red?
+Answer: No
+
+Question: The triangle turns black only when the sand is black. The circle turns orange only when the sand is black. The lightbulb turns green only when the triangle is black. The smoke turns purple only when the sand is black.
+Suppose the circle is orange. Is the triangle necessarily black?
+Answer: Yes
+
+Question: The stone turns black only when the triangle is white. The sand turns purple only when the triangle is white. The smoke turns green only when the triangle is white. The star turns purple only when the sand is purple.
+Suppose the stone is black. Is the sand necessarily purple?
+Answer: Yes
+
+Question: The star turns orange only when the triangle is yellow. The stone turns purple only when the triangle is yellow. The square turns orange only when the star is orange. The smoke turns red only when the triangle is yellow.
+Suppose the stone is purple. Is the star necessarily orange?
+Answer: Yes
+
+Question: The stone turns purple only when the lightbulb is green. The triangle turns purple only when the stone is purple. The square turns green only when the triangle is purple. The star turns yellow only when the lightbulb is green.
+Suppose we force the star to turn yellow, without forcing anything else. Is the triangle necessarily purple?
+Answer: No
+
+Question: The star turns green only when the square is black. The circle turns green only when the star is green. The smoke turns yellow only when the circle is green. The sand turns blue only when the star is green.
+Suppose we force the sand to turn blue, without forcing anything else. Is the square necessarily black?
+Answer: No
+
+Question: The stone turns blue only when the water is red. The square turns purple only when the stone is blue or the water is red. The circle turns green only when the square is purple. The star turns yellow only when the stone is blue.
+Suppose we force the circle to turn green, without forcing anything else. Is the star necessarily yellow?
+Answer:
+Expected answer: No
+Predicted answer: No
+
+Question: The square turns blue only when the star is black. The water turns orange only when the star is black. The smoke turns orange only when the water is orange or the star is black. The sand turns purple only when the smoke is orange.
+Suppose we force the smoke to turn orange, without forcing anything else. Is the star necessarily black?
+Answer: No
+
+Question: The triangle turns white only when the water is black. The star turns orange only when the triangle is white. The stone turns yellow only when the star is orange. The lightbulb turns red only when the stone is yellow.
+Suppose we force the water to turn black, without forcing anything else. Is the star necessarily orange?
+Answer: Yes
+
+Question: The lightbulb turns white only when the circle is blue. The triangle turns red only when the circle is blue. The sand turns green only when the lightbulb is white. The water turns red only when the triangle is red.
+Suppose we force the triangle to turn red, without forcing anything else. Is the circle necessarily blue?
+Answer: No
+
+Question: The stone turns blue only when the smoke is green. The circle turns green only when the smoke is green. The lightbulb turns yellow only when the stone is blue. The water turns white only when the smoke is green.
+Suppose we force the circle to turn green, without forcing anything else. Is the smoke necessarily green?
+Answer: No
+
+Question: The star turns yellow only when the triangle is yellow. The sand turns green only when the star is yellow. The lightbulb turns purple only when the triangle is yellow. The smoke turns white only when the sand is green or the lightbulb is purple.
+Suppose we force the star to turn yellow, without forcing anything else. Is the triangle necessarily yellow?
+Answer: No
+
+Question: The star turns black only when the smoke is blue. The stone turns blue only when the smoke is blue or the star is black. The water turns red only when the star is black. The triangle turns blue only when the stone is blue or the smoke is blue.
+Suppose we force the triangle to turn blue, without forcing anything else. Is the star necessarily black?
+Answer: No
+
+Question: The lightbulb turns black only when the star is black. The water turns green only when the star is black or the lightbulb is black. The square turns red only when the star is black. The circle turns green only when the star is black or the water is green.
+Suppose we force the square to turn red, without forcing anything else. Is the circle necessarily green?
+Answer: No
+
+Question: The circle turns white only when the star is purple. The sand turns white only when the star is purple or the circle is white. The smoke turns green only when the sand is white. The triangle turns yellow only when the circle is white or the sand is white.
+Suppose the sand is white. Is the star necessarily purple?
+Answer: Yes
+
+Question: The stone turns purple only when the water is purple. The smoke turns red only when the stone is purple or the water is purple. The circle turns white only when the water is purple. The star turns yellow only when the stone is purple.
+Suppose the smoke is red. Is the stone necessarily purple?
+Answer:
+Expected answer: Yes
+Predicted answer: Yes
+
+DEBUG: This question has multiple proofs.
+DEBUG: The square turns green only when the triangle is blue. The star turns yellow only when the triangle is blue or the square is green. The sand turns orange only when the star is yellow. The water turns red only when the star is yellow.
+Suppose the triangle is blue. Is the square necessarily green?
+DEBUG[0]: The triangle is blue. The square must be green.
+
+DEBUG[1]: The triangle is blue. The star must be yellow. Either the triangle must be blue or the square must be green. The square must be green.
+
+Question: The circle turns white only when the square is black. The stone turns black only when the square is black. The water turns purple only when the square is black or the stone is black. The star turns yellow only when the stone is black.
+Suppose we force the water to turn purple, without forcing anything else. Is the stone necessarily black?
+Answer: No
+
+Question: The triangle turns purple only when the smoke is red. The stone turns blue only when the triangle is purple. The star turns orange only when the stone is blue. The circle turns black only when the smoke is red.
+Suppose the circle is black. Is the smoke necessarily red?
+Answer: Yes
+
+Question: The lightbulb turns green only when the sand is red. The circle turns green only when the lightbulb is green. The square turns black only when the circle is green or the lightbulb is green. The water turns blue only when the circle is green.
+Suppose we force the square to turn black, without forcing anything else. Is the lightbulb necessarily green?
+Answer: No
+
+Question: The circle turns green only when the triangle is purple. The water turns red only when the triangle is purple. The square turns purple only when the circle is green. The stone turns purple only when the square is purple.
+Suppose the triangle is purple. Is the water necessarily red?
+Answer: Yes
+
+Question: The square turns black only when the sand is green. The circle turns purple only when the sand is green. The water turns black only when the square is black. The stone turns black only when the circle is purple.
+Suppose we force the sand to turn green, without forcing anything else. Is the circle necessarily purple?
+Answer: Yes
+
+Question: The square turns green only when the water is blue. The star turns black only when the square is green. The smoke turns white only when the square is green. The stone turns black only when the smoke is white.
+Suppose we force the stone to turn black, without forcing anything else. Is the square necessarily green?
+Answer: No
+
+Question: The star turns blue only when the square is purple. The triangle turns blue only when the star is blue. The sand turns purple only when the triangle is blue. The stone turns green only when the star is blue.
+Suppose we force the square to turn purple, without forcing anything else. Is the star necessarily blue?
+Answer: Yes
+
+Question: The water turns white only when the star is purple. The lightbulb turns purple only when the star is purple. The sand turns red only when the star is purple or the water is white. The stone turns red only when the lightbulb is purple.
+Suppose we force the sand to turn red, without forcing anything else. Is the water necessarily white?
+Answer: No
+
+Question: The star turns white only when the triangle is green. The square turns blue only when the star is white. The smoke turns red only when the square is blue. The water turns black only when the triangle is green.
+Suppose the triangle is green. Is the square necessarily blue?
+Answer:
+Expected answer: Yes
+Predicted answer: Yes
+
+Question: The circle turns orange only when the star is orange. The sand turns orange only when the star is orange. The triangle turns yellow only when the sand is orange. The water turns black only when the sand is orange.
+Suppose the circle is orange. Is the triangle necessarily yellow?
+Answer: Yes
+
+Question: The triangle turns white only when the circle is red. The smoke turns yellow only when the circle is red. The sand turns blue only when the triangle is white. The stone turns blue only when the sand is blue.
+Suppose the stone is blue. Is the triangle necessarily white?
+Answer: Yes
+
+Question: The sand turns orange only when the lightbulb is green. The smoke turns blue only when the sand is orange or the lightbulb is green. The triangle turns green only when the smoke is blue. The stone turns yellow only when the lightbulb is green.
+Suppose we force the stone to turn yellow, without forcing anything else. Is the lightbulb necessarily green?
+Answer: No
+
+Question: The smoke turns white only when the lightbulb is blue. The triangle turns yellow only when the smoke is white. The stone turns blue only when the triangle is yellow. The circle turns purple only when the lightbulb is blue or the smoke is white.
+Suppose we force the circle to turn purple, without forcing anything else. Is the smoke necessarily white?
+Answer: No
+
+Question: The stone turns black only when the triangle is yellow. The water turns green only when the triangle is yellow. The sand turns white only when the water is green. The square turns yellow only when the triangle is yellow or the stone is black.
+Suppose we force the stone to turn black, without forcing anything else. Is the square necessarily yellow?
+Answer: Yes
+
+Question: The water turns black only when the star is red. The square turns black only when the star is red. The stone turns orange only when the water is black. The sand turns purple only when the water is black.
+Suppose we force the star to turn red, without forcing anything else. Is the water necessarily black?
+Answer: Yes
+
+Question: The smoke turns red only when the stone is purple. The triangle turns blue only when the smoke is red. The lightbulb turns white only when the triangle is blue. The square turns yellow only when the triangle is blue.
+Suppose we force the triangle to turn blue, without forcing anything else. Is the smoke necessarily red?
+Answer: No
+
+Question: The lightbulb turns white only when the stone is green. The water turns orange only when the lightbulb is white. The circle turns black only when the water is orange. The square turns blue only when the stone is green.
+Suppose the square is blue. Is the water necessarily orange?
+Answer: Yes
+
+Question: The square turns red only when the smoke is green. The star turns black only when the square is red or the smoke is green. The stone turns yellow only when the square is red. The sand turns orange only when the square is red.
+Suppose we force the sand to turn orange, without forcing anything else. Is the smoke necessarily green?
+Answer:
+Expected answer: No
+Predicted answer: Yes
+
+Question: The sand turns blue only when the stone is white. The circle turns white only when the stone is white or the sand is blue. The smoke turns blue only when the stone is white. The water turns red only when the smoke is blue.
+Suppose we force the sand to turn blue, without forcing anything else. Is the circle necessarily white?
+Answer: Yes
+
+Question: The stone turns green only when the circle is purple. The lightbulb turns white only when the stone is green. The sand turns black only when the circle is purple or the stone is green. The triangle turns blue only when the lightbulb is white or the stone is green.
+Suppose the sand is black. Is the circle necessarily purple?
+Answer: Yes
+
+Question: The triangle turns red only when the smoke is green. The stone turns black only when the smoke is green or the triangle is red. The star turns orange only when the stone is black. The circle turns black only when the smoke is green.
+Suppose we force the star to turn orange, without forcing anything else. Is the circle necessarily black?
+Answer: No
+
+Question: The triangle turns blue only when the smoke is yellow. The lightbulb turns white only when the triangle is blue. The square turns purple only when the smoke is yellow. The sand turns black only when the smoke is yellow or the square is purple.
+Suppose we force the lightbulb to turn white, without forcing anything else. Is the sand necessarily black?
+Answer: No
+
+Question: The star turns black only when the smoke is green. The water turns blue only when the smoke is green. The lightbulb turns yellow only when the smoke is green. The circle turns green only when the star is black.
+Suppose we force the circle to turn green, without forcing anything else. Is the lightbulb necessarily yellow?
+Answer: No
+
+Question: The water turns black only when the star is green. The sand turns purple only when the water is black. The smoke turns blue only when the water is black. The triangle turns orange only when the star is green.
+Suppose we force the smoke to turn blue, without forcing anything else. Is the sand necessarily purple?
+Answer: No
+
+Question: The lightbulb turns red only when the star is orange. The stone turns white only when the lightbulb is red or the star is orange. The square turns white only when the lightbulb is red. The sand turns purple only when the square is white.
+Suppose we force the sand to turn purple, without forcing anything else. Is the star necessarily orange?
+Answer: No
+
+Question: The triangle turns blue only when the square is blue. The water turns blue only when the square is blue or the triangle is blue. The star turns yellow only when the triangle is blue. The sand turns black only when the water is blue.
+Suppose we force the star to turn yellow, without forcing anything else. Is the square necessarily blue?
+Answer: No
+
+Question: The lightbulb turns orange only when the stone is blue. The triangle turns black only when the stone is blue. The square turns purple only when the stone is blue. The star turns yellow only when the lightbulb is orange.
+Suppose the triangle is black. Is the star necessarily yellow?
+Answer:
+Expected answer: Yes
+Predicted answer: No
+
+Question: The square turns yellow only when the lightbulb is white. The triangle turns black only when the square is yellow. The circle turns purple only when the triangle is black. The sand turns purple only when the triangle is black.
+Suppose the square is yellow. Is the triangle necessarily black?
+Answer: Yes
+
+Question: The stone turns white only when the smoke is red. The circle turns black only when the stone is white. The lightbulb turns yellow only when the circle is black. The water turns blue only when the circle is black.
+Suppose the stone is white. Is the lightbulb necessarily yellow?
+Answer: Yes
+
+Question: The stone turns orange only when the lightbulb is purple. The square turns blue only when the lightbulb is purple. The circle turns yellow only when the square is blue. The star turns black only when the lightbulb is purple or the stone is orange.
+Suppose we force the stone to turn orange, without forcing anything else. Is the star necessarily black?
+Answer: Yes
+
+Question: The water turns blue only when the lightbulb is black. The triangle turns yellow only when the water is blue. The smoke turns white only when the triangle is yellow. The circle turns white only when the lightbulb is black.
+Suppose we force the lightbulb to turn black, without forcing anything else. Is the water necessarily blue?
+Answer: Yes
+
+Question: The square turns purple only when the smoke is blue. The star turns orange only when the square is purple or the smoke is blue. The lightbulb turns white only when the square is purple. The triangle turns purple only when the square is purple.
+Suppose we force the star to turn orange, without forcing anything else. Is the square necessarily purple?
+Answer: No
+
+Question: The square turns blue only when the triangle is red. The star turns black only when the triangle is red. The circle turns orange only when the triangle is red. The smoke turns green only when the star is black or the square is blue.
+Suppose we force the smoke to turn green, without forcing anything else. Is the square necessarily blue?
+Answer: No
+
+Question: The circle turns white only when the smoke is blue. The square turns purple only when the smoke is blue. The stone turns black only when the circle is white. The lightbulb turns yellow only when the square is purple.
+Suppose we force the lightbulb to turn yellow, without forcing anything else. Is the square necessarily purple?
+Answer: No
+
+Question: The square turns green only when the stone is black. The lightbulb turns white only when the square is green. The star turns yellow only when the stone is black. The water turns white only when the stone is black.
+Suppose the star is yellow. Is the square necessarily green?
+Answer: Yes
+
+Question: The circle turns orange only when the lightbulb is blue. The water turns green only when the lightbulb is blue. The star turns red only when the lightbulb is blue. The square turns green only when the water is green.
+Suppose the star is red. Is the water necessarily green?
+Answer:
+Expected answer: Yes
+Predicted answer: Yes
+
+Question: The circle turns red only when the lightbulb is yellow. The triangle turns red only when the lightbulb is yellow. The sand turns red only when the lightbulb is yellow. The square turns white only when the triangle is red or the sand is red.
+Suppose we force the circle to turn red, without forcing anything else. Is the triangle necessarily red?
+Answer: No
+
+Question: The water turns yellow only when the star is black. The square turns black only when the water is yellow. The smoke turns red only when the square is black. The sand turns purple only when the star is black or the water is yellow.
+Suppose we force the smoke to turn red, without forcing anything else. Is the star necessarily black?
+Answer: No
+
+Question: The circle turns black only when the square is green. The sand turns white only when the square is green. The lightbulb turns purple only when the sand is white. The smoke turns yellow only when the circle is black.
+Suppose the smoke is yellow. Is the circle necessarily black?
+Answer: Yes
+
+Question: The smoke turns yellow only when the circle is orange. The water turns yellow only when the circle is orange or the smoke is yellow. The sand turns green only when the smoke is yellow. The triangle turns red only when the sand is green.
+Suppose we force the sand to turn green, without forcing anything else. Is the smoke necessarily yellow?
+Answer: No
+
+Question: The lightbulb turns yellow only when the water is black. The stone turns green only when the water is black. The circle turns black only when the water is black. The smoke turns blue only when the stone is green.
+Suppose the lightbulb is yellow. Is the water necessarily black?
+Answer: Yes
+
+Question: The circle turns orange only when the water is purple. The lightbulb turns blue only when the circle is orange. The star turns purple only when the lightbulb is blue. The square turns black only when the circle is orange.
+Suppose we force the water to turn purple, without forcing anything else. Is the star necessarily purple?
+Answer: Yes
+
+Question: The circle turns white only when the sand is orange. The water turns purple only when the sand is orange. The triangle turns black only when the sand is orange. The stone turns red only when the circle is white.
+Suppose the sand is orange. Is the circle necessarily white?
+Answer: Yes
+
+Question: The stone turns white only when the smoke is red. The circle turns white only when the smoke is red. The water turns orange only when the smoke is red. The sand turns black only when the circle is white.
+Suppose we force the circle to turn white, without forcing anything else. Is the smoke necessarily red?
+Answer: No
+
+Question: The sand turns orange only when the triangle is purple. The star turns orange only when the triangle is purple. The stone turns orange only when the star is orange. The square turns yellow only when the triangle is purple or the star is orange.
+Suppose we force the sand to turn orange, without forcing anything else. Is the stone necessarily orange?
+Answer:
+Expected answer: No
+Predicted answer: Yes
