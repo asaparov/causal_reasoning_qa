@@ -2,6 +2,9 @@ from random import randrange, choice, sample, seed
 import itertools
 import gpt3
 import getpass
+import json
+
+print_debug_info = False
 
 PRESENT_TENSE = { "turn":"turns", "be":"is" }
 PAST_TENSE = { "turn":"turned", "be":"was" }
@@ -33,13 +36,20 @@ class Node(object):
 		else:
 			return "the " + self.actor + " " + inflected_verb + adverb + " " + color_np
 
+	def __str__(self):
+		return self.actor
+
+	def __repr__(self):
+		return self.actor
+
 def generate_graph(num_vertices, max_num_parents, max_cyclic_edges):
 	vertices = []
 	for i in range(num_vertices):
 		vertices.append(Node())
 
 	# sample a random DAG
-	for i in range(1, num_vertices):
+	num_sources = choice([1, 2])
+	for i in range(num_sources, num_vertices):
 		# sample the number of parent vertices
 		if choice([True, False]):
 			num_parents = 1
@@ -151,28 +161,32 @@ def enumerate_hyperpaths(hypergraph, source, target, hypotheses, stack=[]):
 					paths.append(proof)
 		elif hyperedge in hypergraph and hyperedge not in stack:
 			subpaths = enumerate_hyperpaths(hypergraph, source, hyperedge, hypotheses, stack=stack+[target])
-			paths.extend([path + [hyperedge] for path in subpaths if hyperedge not in path])
+			paths.extend([path + [hyperedge] for path in subpaths if hyperedge not in path and (path + [hyperedge]) not in paths])
 		elif hyperedge == source:
 			paths.append([hyperedge])
 		are_unique(paths)
 	return paths
 
-def add_hypothesis_set(hypotheses, new_set, proof_edge, is_changed):
+def add_hypothesis_set(hypotheses, new_set, proof_edge, is_changed, debug_msg):
 	# check if the new hypothesis set already exists in `hypotheses`
 	for (existing_set, proof_edges) in hypotheses:
 		if existing_set == new_set:
 			if proof_edge != None and proof_edge not in proof_edges:
+				if print_debug_info and debug_msg != None:
+					print(debug_msg)
 				proof_edges.append(proof_edge)
 			return hypotheses, is_changed
 
 	# add the new hypothesis set to `hypotheses`
+	if print_debug_info and debug_msg != None:
+		print(debug_msg)
 	hypotheses.append((new_set, [proof_edge] if proof_edge != None else []))
 	return hypotheses, True
 
 def reduce_hypothesis_set(hypotheses):
 	new_hypotheses = []
 	for hypothesis_set in hypotheses:
-		new_hypotheses, _ = add_hypothesis_set(new_hypotheses, hypothesis_set, None, False)
+		new_hypotheses, _ = add_hypothesis_set(new_hypotheses, hypothesis_set, None, False, None)
 	return new_hypotheses
 
 def add_proof_edge(proof_edges, hypotheses, new_edge):
@@ -195,11 +209,14 @@ def solve_causal_query(start_vertex, start_value, target_vertex):
 			if neighbor not in visited:
 				queue.append(neighbor)
 
+	debug_msg = None
 	known_values = {}
 	known_values[start_vertex] = [], [(frozenset(),[])] # start_vertex is provable from the set of no axioms
 	queue = start_vertex.children + start_vertex.parents
 	while len(queue) != 0:
 		next_vertex = queue.pop()
+		if print_debug_info:
+			print("solve_causal_query DEBUG: Processing vertex '{}'.".format(next_vertex))
 
 		if next_vertex in known_values:
 			provably_false, provably_true = known_values[next_vertex]
@@ -213,14 +230,18 @@ def solve_causal_query(start_vertex, start_value, target_vertex):
 		for parent in next_vertex.parents:
 			if parent in known_values:
 				for hypotheses, _ in known_values[parent][1]:
-					provably_true, provably_true_changed = add_hypothesis_set(provably_true, hypotheses, parent, provably_true_changed)
+					if print_debug_info:
+						debug_msg = "solve_causal_query DEBUG: '{}' is provably true since its parent '{}' is true given {}.".format(next_vertex, parent, hypotheses)
+					provably_true, provably_true_changed = add_hypothesis_set(provably_true, hypotheses, parent, provably_true_changed, debug_msg)
 
 		# check if all parents are false
 		if len(next_vertex.parents) != 0:
 			combinations = itertools.product(*[(known_values[parent][0] if parent in known_values else []) for parent in next_vertex.parents])
 			new_provably_false = reduce_hypothesis_set([frozenset().union(*[hypotheses for (hypotheses, _) in combination]) for combination in combinations])
 			for hypotheses, _ in new_provably_false:
-				provably_false, provably_false_changed = add_hypothesis_set(provably_false, hypotheses, next_vertex.parents, provably_false_changed)
+				if print_debug_info:
+					debug_msg = "solve_causal_query DEBUG: '{}' is provably false since all parents are false given {}.".format(next_vertex, hypotheses)
+				provably_false, provably_false_changed = add_hypothesis_set(provably_false, hypotheses, next_vertex.parents, provably_false_changed, debug_msg)
 
 		for child in next_vertex.children:
 			if child in known_values:
@@ -229,11 +250,15 @@ def solve_causal_query(start_vertex, start_value, target_vertex):
 				combinations = itertools.product(*hypotheses_lists)
 				new_provably_true = reduce_hypothesis_set([frozenset().union(*[hypotheses for (hypotheses, _) in combination]) for combination in combinations])
 				for hypotheses, _ in new_provably_true:
-					provably_true, provably_true_changed = add_hypothesis_set(provably_true, hypotheses, child, provably_true_changed)
+					if print_debug_info:
+						debug_msg = "solve_causal_query DEBUG: '{}' is provably true since its child '{}' is true and all other parents are false given {}.".format(next_vertex, child, hypotheses)
+					provably_true, provably_true_changed = add_hypothesis_set(provably_true, hypotheses, child, provably_true_changed, debug_msg)
 
 				# check if any child is set to false
 				for hypotheses, _ in known_values[child][0]:
-					provably_false, provably_false_changed = add_hypothesis_set(provably_false, hypotheses, child, provably_false_changed)
+					if print_debug_info:
+						debug_msg = "solve_causal_query DEBUG: '{}' is provably false since its child '{}' is false given {}.".format(next_vertex, child, hypotheses)
+					provably_false, provably_false_changed = add_hypothesis_set(provably_false, hypotheses, child, provably_false_changed, debug_msg)
 
 		# check if we can apply proof-by-cases
 		if provably_true_changed:
@@ -247,7 +272,10 @@ def solve_causal_query(start_vertex, start_value, target_vertex):
 					for i in range(len(disjunction.parents)):
 						new_combination.append((set(combination[i][0]), combination[i][1]))
 						new_combination[i][0].remove(disjunction.parents[i])
-					provably_true, provably_true_changed = add_hypothesis_set(provably_true, frozenset().union(*[hypotheses for (hypotheses, proof_edges) in new_combination + [combination[-1]]]), tuple([proof_edges for (hypotheses, proof_edges) in new_combination] + [disjunction]), provably_true_changed)
+					new_hypotheses = frozenset().union(*[hypotheses for (hypotheses, proof_edges) in new_combination + [combination[-1]]])
+					if print_debug_info:
+						debug_msg = "solve_causal_query DEBUG: '{}' can be proved true by cases {} given {}.".format(next_vertex, disjunction.parents, new_hypotheses)
+					provably_true, provably_true_changed = add_hypothesis_set(provably_true, new_hypotheses, tuple([proof_edges[:] for (hypotheses, proof_edges) in new_combination] + [disjunction]), provably_true_changed, debug_msg)
 		if provably_false_changed:
 			for disjunction in disjunctions:
 				if disjunction not in known_values:
@@ -259,7 +287,10 @@ def solve_causal_query(start_vertex, start_value, target_vertex):
 					for i in range(len(disjunction.parents)):
 						new_combination.append((set(combination[i][0]), combination[i][1]))
 						new_combination[i][0].remove(disjunction.parents[i])
-					provably_false, provably_false_changed = add_hypothesis_set(provably_false, frozenset().union(*[hypotheses for (hypotheses, proof_edges) in new_combination + [combination[-1]]]), tuple([proof_edges for (hypotheses, proof_edges) in new_combination] + [disjunction]), provably_false_changed)
+					new_hypotheses = frozenset().union(*[hypotheses for (hypotheses, proof_edges) in new_combination + [combination[-1]]])
+					if print_debug_info:
+						debug_msg = "solve_causal_query DEBUG: '{}' can be proved false by cases {} given {}.".format(next_vertex, disjunction.parents, new_hypotheses)
+					provably_false, provably_false_changed = add_hypothesis_set(provably_false, new_hypotheses, tuple([proof_edges[:] for (hypotheses, proof_edges) in new_combination] + [disjunction]), provably_false_changed, debug_msg)
 
 		known_values[next_vertex] = provably_false, provably_true
 
@@ -280,7 +311,7 @@ def solve_causal_query(start_vertex, start_value, target_vertex):
 									to_enqueue.append(neighbor)
 						else:
 							parent_provably_false, parent_provably_true = known_values[parent]
-							parent_provably_true, updated = add_hypothesis_set(parent_provably_true, frozenset([parent]), None, False)
+							parent_provably_true, updated = add_hypothesis_set(parent_provably_true, frozenset([parent]), None, False, None)
 							if updated:
 								known_values[parent] = parent_provably_false, parent_provably_true
 								for neighbor in parent.children + parent.parents:
@@ -311,7 +342,7 @@ def solve_causal_query(start_vertex, start_value, target_vertex):
 						provably_false = []
 					else:
 						provably_false, provably_true = inv_proof_graph[proof_edge]
-					provably_true, _ = add_hypothesis_set(provably_true, hypotheses, vertex, False)
+					provably_true, _ = add_hypothesis_set(provably_true, hypotheses, vertex, False, None)
 					inv_proof_graph[proof_edge] = provably_false, provably_true
 			for (hypotheses, proof_edges) in provably_false:
 				for proof_edge in proof_edges:
@@ -328,13 +359,15 @@ def solve_causal_query(start_vertex, start_value, target_vertex):
 						provably_false = []
 					else:
 						provably_false, provably_true = inv_proof_graph[proof_edge]
-					provably_false, _ = add_hypothesis_set(provably_false, hypotheses, vertex, False)
+					provably_false, _ = add_hypothesis_set(provably_false, hypotheses, vertex, False, None)
 					inv_proof_graph[proof_edge] = provably_false, provably_true
 
 		proof = []
 		queue.append(start_vertex)
 		while len(queue) != 0:
 			next_vertex = queue.pop()
+			if next_vertex in proof:
+				continue
 			proof.append(next_vertex)
 
 			for proof_edge, (provably_false, provably_true) in inv_proof_graph.items():
@@ -417,6 +450,8 @@ def generate_example(num_vertices, max_num_parents, max_cyclic_edges, intervene)
 		query = "Suppose " + events[0].to_clause("be", negate=not query_state) + ". " + capitalize(events[1].to_clause("be", invert=True, adverb="necessarily")) + "?"
 
 	# compute the solution to the query
+	if print_debug_info:
+		print("\ngenerate_example DEBUG: Calling `solve_causal_query` with example {} and query '{}'".format(context, query))
 	known_values, proof_paths = solve_causal_query(events[0], query_state, events[1])
 	are_unique(proof_paths)
 	proofs = []
@@ -444,48 +479,138 @@ def generate_example(num_vertices, max_num_parents, max_cyclic_edges, intervene)
 
 	return context, query, proofs, answer
 
-seed(456130212)
-use_chain_of_thought = True
-num_few_shot_examples = 0
-num_trials = 100
-gpt_api_key = getpass.getpass(prompt='Enter OpenAI API Key:')
-for trial in range(num_trials):
-	prompt = ""
-	for i in range(num_few_shot_examples):
-		while True:
-			context, query, proofs, answer = generate_example(5, 3, 0, intervene=choice([True, False]))
-			if len(proofs) == 1:
-				break
-		if use_chain_of_thought:
-			proof_text = ((" ".join(proofs[0]) + " ") if len(proofs) != 0 else "")
-			prompt += "Question: " + " ".join(context) + "\n" + query + "\nExplanation: " + proof_text + "\nAnswer: " + answer + "\n\n"
-		else:
-			prompt += "Question: " + " ".join(context) + "\n" + query + "\nAnswer: " + answer + "\n\n"
-
+def parse_log(log):
+	trial = 0
+	resume_position = 0
+	last_question = ""
+	expected_answers = []
+	predicted_answers = []
 	while True:
-		context, query, proofs, answer = generate_example(5, 3, 0, intervene=choice([True, False]))
-		if len(proofs) == 1:
+		# look for the next line beginning with 'Predicted answer:'
+		line = log.readline()
+		if not line:
+			break # found the end of the file
+		elif line.startswith('(Example '):
+			last_question = line[(line.index('Question: ') + len('Question: ')):]
+			continue
+		elif not line.startswith('Predicted answer:'):
+			last_question += line
+			continue
+
+		# read the predicted answer
+		expected_answer = None
+		predicted_answer = line[len('Predicted answer:'):]
+		while True:
+			line = log.readline()
+			if not line:
+				break # found the end of the file
+			elif line.startswith('Expected answer: '):
+				expected_answer = line[len('Expected answer: '):]
+				break
+			predicted_answer += line
+
+		# read the expected answer
+		mean = None
+		found_summary = False
+		while expected_answer is not None:
+			line = log.readline()
+			if not line:
+				break # found the end of the file
+			elif line.startswith('Logprobs: '):
+				# read the summary statistics
+				log.readline() # consume the empty line separating each example
+				trial += 1
+				resume_position = log.tell()
+				found_summary = True
+				break
+			expected_answer += line
+
+		if not found_summary:
 			break
-		else:
-			print("DEBUG: This question has multiple proofs.")
-			print("DEBUG: " + " ".join(context) + "\n" + query)
-			for i in range(len(proofs)):
-				print("DEBUG[{}]: {}\n".format(i, " ".join(proofs[i])))
-	prompt += "Question: " + " ".join(context) + "\n" + query
+		expected_answers.append(expected_answer)
+		predicted_answers.append(predicted_answer)
+
+	return (trial, resume_position, expected_answers, predicted_answers)
+
+def print_output(str, log):
+	log.write(str + '\n')
+	print(str)
+
+if __name__ == "__main__":
+	seed(456130212)
+	use_chain_of_thought = True
+	num_few_shot_examples = 0
+	num_trials = 100
+	model = "gpt3"
+	model_size = "text-davinci-003"
+	intervention = True
+
+	log_file = model + "_" + model_size.lower().replace('-', '') + "_" + str(num_few_shot_examples) + "shot"
 	if use_chain_of_thought:
 		if num_few_shot_examples == 0:
-			prompt += "\nLet's think step-by-step:"
+			log_file += "_stepbystep"
 		else:
-			prompt += "\nExplanation:"
-	else:
-		prompt += "\nAnswer:"
-	print(prompt)
+			log_file += "_CoT"
+	if intervention:
+		log_file += "_intervention"
+	log_file += ".log"
 
-	#print(" ".join(context) + "\n" + query + "\n" + proof_text + "\nExpected answer: " + answer)
-	prediction = "" #gpt3.predict(gpt_api_key, "text-davinci-003", prompt)
-	if use_chain_of_thought:
-		proof_text = ((" ".join(proofs[0]) + " ") if len(proofs) != 0 else "")
-		print("Expected answer: " + proof_text + answer + "")
-	else:
-		print("Expected answer: " + answer + "")
-	print("Predicted answer:" + prediction + "\n")
+	log = open(log_file, "a+")
+	log.seek(0)
+	(resume_trial, truncate_pos, _, _) = parse_log(log)
+	if truncate_pos != 0:
+		print("Resuming existing experiment at trial {}".format(resume_trial + 1))
+
+	if model == "gpt3":
+		gpt_api_key = getpass.getpass(prompt='Enter OpenAI API Key:')
+	trial = 0
+	while trial < num_trials:
+		prompt = ""
+		for i in range(num_few_shot_examples):
+			expected_answer = choice(["Yes", "No"])
+			while True:
+				context, query, proofs, answer = generate_example(5, 3, 0, intervene=intervention)
+				if len(proofs) == 1 and answer == expected_answer:
+					break
+			if use_chain_of_thought:
+				proof_text = ((" ".join(proofs[0]) + " ") if len(proofs) != 0 else "")
+				prompt += "Question: " + " ".join(context) + "\n" + query + "\nExplanation: " + proof_text + "\nAnswer: " + answer + "\n\n"
+			else:
+				prompt += "Question: " + " ".join(context) + "\n" + query + "\nAnswer: " + answer + "\n\n"
+
+		expected_answer = choice(["Yes", "No"])
+		while True:
+			context, query, proofs, answer = generate_example(5, 3, 0, intervene=intervention)
+			if len(proofs) == 1 and answer == expected_answer:
+				break
+			#elif len(proofs) != 1:
+			#	print("DEBUG: This question has multiple proofs.")
+			#	print("DEBUG: " + " ".join(context) + "\n" + query)
+			#	for i in range(len(proofs)):
+			#		print("DEBUG[{}]: {}\n".format(i, " ".join(proofs[i])))
+		prompt += "Question: " + " ".join(context) + "\n" + query
+		if use_chain_of_thought:
+			if num_few_shot_examples == 0:
+				prompt += "\nLet's think step-by-step, then answer Yes or No:"
+			else:
+				prompt += "\nExplanation:"
+		else:
+			prompt += "\nAnswer:"
+
+		trial += 1
+		if trial <= resume_trial:
+			continue
+		log.write("(Example {}) ".format(trial))
+		print_output(prompt, log)
+
+		if model == "gpt3":
+			prediction, logprobs = gpt3.predict(gpt_api_key, "text-davinci-003", prompt)
+		elif model == "dummy":
+			prediction, logprobs = "", []
+		print_output("Predicted answer:" + prediction, log)
+		if use_chain_of_thought:
+			proof_text = ((" ".join(proofs[0]) + " ") if len(proofs) != 0 else "")
+			print_output("Expected answer: " + proof_text + answer + "", log)
+		else:
+			print_output("Expected answer: " + answer + "", log)
+		print_output("Logprobs: " + json.dumps(logprobs) + "\n", log)
