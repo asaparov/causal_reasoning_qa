@@ -540,8 +540,8 @@ if __name__ == "__main__":
 	seed(456130212)
 	use_chain_of_thought = True
 	num_few_shot_examples = 0
-	num_trials = 100
-	model = "gpt3"
+	num_trials = 10
+	model = "dummy"
 	model_size = "text-davinci-003"
 	intervention = True
 
