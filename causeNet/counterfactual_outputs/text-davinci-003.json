@@ -1,0 +1,834 @@
+[
+ {
+  "question": "Someone had pneumonia and died. They did not have any other risk factors for death. If they had not had pneumonia, then:",
+  "options": [
+   "they still could have died.",
+   "they would not have died."
+  ],
+  "answer": "B",
+  "consistent": true,
+  "direction": 1,
+  "model_output": "A. they still could have died.",
+  "predicted_answer": "A",
+  "correct": false
+ },
+ {
+  "question": "Someone had pneumonia and died. They did not have any other risk factors for death. If they had not had pneumonia, then:",
+  "options": [
+   "they would not have died.",
+   "they still could have died."
+  ],
+  "answer": "A",
+  "consistent": true,
+  "direction": 1,
+  "model_output": "A. they would not have died.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "Someone had pneumonia and died. They had no other causes for pneumonia. If they had not died, then:",
+  "options": [
+   "they still could have had pneumonia.",
+   "they would not have had pneumonia."
+  ],
+  "answer": "A",
+  "consistent": true,
+  "direction": -1,
+  "model_output": "A. they still could have had pneumonia.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "Someone had pneumonia and died. They had no other causes for pneumonia. If they had not died, then:",
+  "options": [
+   "they would not have had pneumonia.",
+   "they still could have had pneumonia."
+  ],
+  "answer": "B",
+  "consistent": true,
+  "direction": -1,
+  "model_output": "B. they still could have had pneumonia.",
+  "predicted_answer": "B",
+  "correct": true
+ },
+ {
+  "question": "Someone has pneumonia and health care costs. Aside from the treatment for pneumonia, they have no other health care costs. If they did not have pneumonia, then:",
+  "options": [
+   "they still could have health care costs.",
+   "they would not have health care costs."
+  ],
+  "answer": "B",
+  "consistent": true,
+  "direction": 1,
+  "model_output": "A. they still could have health care costs.",
+  "predicted_answer": "A",
+  "correct": false
+ },
+ {
+  "question": "Someone has pneumonia and health care costs. Aside from the treatment for pneumonia, they have no other health care costs. If they did not have pneumonia, then:",
+  "options": [
+   "they would not have health care costs.",
+   "they still could have health care costs."
+  ],
+  "answer": "A",
+  "consistent": true,
+  "direction": 1,
+  "model_output": "B. they still could have health care costs.",
+  "predicted_answer": "B",
+  "correct": false
+ },
+ {
+  "question": "Someone has pneumonia and health care costs. They have no other risk factors for pneumonia. If they did not have health care costs, then:",
+  "options": [
+   "they still could have pneumonia.",
+   "they would not have pneumonia."
+  ],
+  "answer": "A",
+  "consistent": true,
+  "direction": -1,
+  "model_output": "A. they still could have pneumonia.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "Someone has pneumonia and health care costs. They have no other risk factors for pneumonia. If they did not have health care costs, then:",
+  "options": [
+   "they would not have pneumonia.",
+   "they still could have pneumonia."
+  ],
+  "answer": "B",
+  "consistent": true,
+  "direction": -1,
+  "model_output": "B. They still could have pneumonia.",
+  "predicted_answer": "B",
+  "correct": true
+ },
+ {
+  "question": "Someone was exposed to toluene and died. They have no other risk factors for death. If they were not exposed to toluene, then:",
+  "options": [
+   "they still could have died.",
+   "they would not have died."
+  ],
+  "answer": "B",
+  "consistent": true,
+  "direction": 1,
+  "model_output": "A. they still could have died.",
+  "predicted_answer": "A",
+  "correct": false
+ },
+ {
+  "question": "Someone was exposed to toluene and died. They have no other risk factors for death. If they were not exposed to toluene, then:",
+  "options": [
+   "they would not have died.",
+   "they still could have died."
+  ],
+  "answer": "A",
+  "consistent": true,
+  "direction": 1,
+  "model_output": "A. they would not have died.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "Someone was exposed to toluene and died. There were no other causes for exposure to toluene. If they had not died, then:",
+  "options": [
+   "they still could have been exposed to toluene.",
+   "they would not have been exposed to toluene."
+  ],
+  "answer": "A",
+  "consistent": true,
+  "direction": -1,
+  "model_output": "A. they still could have been exposed to toluene.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "Someone was exposed to toluene and died. There were no other causes for exposure to toluene. If they had not died, then:",
+  "options": [
+   "they would not have been exposed to toluene.",
+   "they still could have been exposed to toluene."
+  ],
+  "answer": "B",
+  "consistent": true,
+  "direction": -1,
+  "model_output": "B. they still could have been exposed to toluene.",
+  "predicted_answer": "B",
+  "correct": true
+ },
+ {
+  "question": "Someone has uterine fibroids and pain. They had no other risk factors for pain. If they did not have uterine fibrids, then:",
+  "options": [
+   "they still could have pain.",
+   "they would not have pain."
+  ],
+  "answer": "B",
+  "consistent": true,
+  "direction": 1,
+  "model_output": "A. they still could have pain.",
+  "predicted_answer": "A",
+  "correct": false
+ },
+ {
+  "question": "Someone has uterine fibroids and pain. They had no other risk factors for pain. If they did not have uterine fibrids, then:",
+  "options": [
+   "they would not have pain.",
+   "they still could have pain."
+  ],
+  "answer": "A",
+  "consistent": true,
+  "direction": 1,
+  "model_output": "B. they still could have pain.",
+  "predicted_answer": "B",
+  "correct": false
+ },
+ {
+  "question": "Someone has uterine fibroids and pain. They had no other risk factors for uterine fibroids. If they did not have pain, then:",
+  "options": [
+   "they still could have uterine fibroids.",
+   "they would not have uterine fibroids."
+  ],
+  "answer": "A",
+  "consistent": true,
+  "direction": -1,
+  "model_output": "A. they still could have uterine fibroids.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "Someone has uterine fibroids and pain. They had no other risk factors for uterine fibroids. If they did not have pain, then:",
+  "options": [
+   "they would not have uterine fibroids.",
+   "they still could have uterine fibroids."
+  ],
+  "answer": "B",
+  "consistent": true,
+  "direction": -1,
+  "model_output": "B. they still could have uterine fibroids.",
+  "predicted_answer": "B",
+  "correct": true
+ },
+ {
+  "question": "There are human emissions and global warming occurred. There are no other causes for global warming. If there were no human emissions, then:",
+  "options": [
+   "global warming could still occur.",
+   "global warming would not occur."
+  ],
+  "answer": "B",
+  "consistent": true,
+  "direction": 1,
+  "model_output": "B. global warming would not occur.",
+  "predicted_answer": "B",
+  "correct": true
+ },
+ {
+  "question": "There are human emissions and global warming occurred. There are no other causes for global warming. If there were no human emissions, then:",
+  "options": [
+   "global warming would not occur.",
+   "global warming could still occur."
+  ],
+  "answer": "A",
+  "consistent": true,
+  "direction": 1,
+  "model_output": "A. global warming would not occur.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "There are human emissions and global warming occurred. There are no other causes for human emissions. If there were no global warming, then:",
+  "options": [
+   "human emissions could still occur.",
+   "human emissions would not occur."
+  ],
+  "answer": "A",
+  "consistent": true,
+  "direction": -1,
+  "model_output": "A. human emissions could still occur.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "There are human emissions and global warming occurred. There are no other causes for human emissions. If there were no global warming, then:",
+  "options": [
+   "human emissions would not occur.",
+   "human emissions could still occur."
+  ],
+  "answer": "B",
+  "consistent": true,
+  "direction": -1,
+  "model_output": "B. human emissions could still occur.",
+  "predicted_answer": "B",
+  "correct": true
+ },
+ {
+  "question": "Economic growth and global warming occurred. There are no other causes for global warming. If there were no economic growth, then:",
+  "options": [
+   "global warming could still occur.",
+   "global warming would not occur."
+  ],
+  "answer": "B",
+  "consistent": true,
+  "direction": 1,
+  "model_output": "A. global warming could still occur.",
+  "predicted_answer": "A",
+  "correct": false
+ },
+ {
+  "question": "Economic growth and global warming occurred. There are no other causes for global warming. If there were no economic growth, then:",
+  "options": [
+   "global warming would not occur.",
+   "global warming could still occur."
+  ],
+  "answer": "A",
+  "consistent": true,
+  "direction": 1,
+  "model_output": "B. Global warming could still occur. Economic growth is only one of many factors that can contribute to global warming. Other factors include human activities such as burning fossil",
+  "predicted_answer": "B",
+  "correct": false
+ },
+ {
+  "question": "Economic growth and global warming occurred. There are no other causes for economic growth. If there were no global warming, then:",
+  "options": [
+   "economic growth could still occur.",
+   "economic growth would not occur."
+  ],
+  "answer": "A",
+  "consistent": true,
+  "direction": -1,
+  "model_output": "A. economic growth could still occur.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "Economic growth and global warming occurred. There are no other causes for economic growth. If there were no global warming, then:",
+  "options": [
+   "economic growth would not occur.",
+   "economic growth could still occur."
+  ],
+  "answer": "B",
+  "consistent": true,
+  "direction": -1,
+  "model_output": "B. economic growth could still occur.",
+  "predicted_answer": "B",
+  "correct": true
+ },
+ {
+  "question": "A fire occurred and there was an evacuation. There are no other causes for the evacuation. If there were no fire, then:",
+  "options": [
+   "the evacuation could still occur.",
+   "the evacuation would not occur."
+  ],
+  "answer": "B",
+  "consistent": true,
+  "direction": 1,
+  "model_output": "B. the evacuation would not occur.",
+  "predicted_answer": "B",
+  "correct": true
+ },
+ {
+  "question": "A fire occurred and there was an evacuation. There are no other causes for the evacuation. If there were no fire, then:",
+  "options": [
+   "the evacuation would not occur.",
+   "the evacuation could still occur."
+  ],
+  "answer": "A",
+  "consistent": true,
+  "direction": 1,
+  "model_output": "A. the evacuation would not occur.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "A fire occurred and there was an evacuation. There are no other causes for the fire. If there were no evacuation, then:",
+  "options": [
+   "the fire could still occur.",
+   "the fire would not occur."
+  ],
+  "answer": "A",
+  "consistent": true,
+  "direction": -1,
+  "model_output": "A. the fire could still occur.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "A fire occurred and there was an evacuation. There are no other causes for the fire. If there were no evacuation, then:",
+  "options": [
+   "the fire would not occur.",
+   "the fire could still occur."
+  ],
+  "answer": "B",
+  "consistent": true,
+  "direction": -1,
+  "model_output": "B. the fire could still occur.",
+  "predicted_answer": "B",
+  "correct": true
+ },
+ {
+  "question": "There was a fire and shadows. There are no other source of light to cast shadows. If there were no fire, then:",
+  "options": [
+   "the shadows could still be there.",
+   "there would be no shadows."
+  ],
+  "answer": "B",
+  "consistent": true,
+  "direction": 1,
+  "model_output": "B. there would be no shadows.",
+  "predicted_answer": "B",
+  "correct": true
+ },
+ {
+  "question": "There was a fire and shadows. There are no other source of light to cast shadows. If there were no fire, then:",
+  "options": [
+   "there would be no shadows.",
+   "the shadows could still be there."
+  ],
+  "answer": "A",
+  "consistent": true,
+  "direction": 1,
+  "model_output": "A. there would be no shadows.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "There was a fire and shadows. There are no other causes for the fire. If there were no shadows, then:",
+  "options": [
+   "the fire could still be there.",
+   "there would be no fire."
+  ],
+  "answer": "A",
+  "consistent": true,
+  "direction": -1,
+  "model_output": "A. the fire could still be there.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "There was a fire and shadows. There are no other causes for the fire. If there were no shadows, then:",
+  "options": [
+   "there would be no fire.",
+   "the fire could still be there."
+  ],
+  "answer": "B",
+  "consistent": true,
+  "direction": -1,
+  "model_output": "B. the fire could still be there.",
+  "predicted_answer": "B",
+  "correct": true
+ },
+ {
+  "question": "Global warming occurred and ocean temperatures rose. There were no other causes of the rise in ocean temperatures. If there was no global warming, then:",
+  "options": [
+   "the ocean temperatures would still rise.",
+   "the ocean temperatures would not rise."
+  ],
+  "answer": "B",
+  "consistent": false,
+  "direction": 1,
+  "model_output": "B. the ocean temperatures would not rise.",
+  "predicted_answer": "B",
+  "correct": true
+ },
+ {
+  "question": "Global warming occurred and ocean temperatures rose. There were no other causes of the rise in ocean temperatures. If there was no global warming, then:",
+  "options": [
+   "the ocean temperatures would not rise.",
+   "the ocean temperatures would still rise."
+  ],
+  "answer": "A",
+  "consistent": false,
+  "direction": 1,
+  "model_output": "A. the ocean temperatures would not rise.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "Global warming occurred and ocean temperatures rose. There were no other causes for global warming. If there was no rise in ocean temperatures, then:",
+  "options": [
+   "global warming would still occur.",
+   "global warming would not occur."
+  ],
+  "answer": "A",
+  "consistent": false,
+  "direction": -1,
+  "model_output": "B. global warming would not occur.",
+  "predicted_answer": "B",
+  "correct": false
+ },
+ {
+  "question": "Global warming occurred and ocean temperatures rose. There were no other causes for global warming. If there was no rise in ocean temperatures, then:",
+  "options": [
+   "global warming would not occur.",
+   "global warming would still occur."
+  ],
+  "answer": "B",
+  "consistent": false,
+  "direction": -1,
+  "model_output": "A. global warming would not occur.",
+  "predicted_answer": "A",
+  "correct": false
+ },
+ {
+  "question": "Someone had an injury and a discrepancy in leg length. There were no other causes for the discrepancy in leg length. If they were not injured, then:",
+  "options": [
+   "they could still have a discrepancy in leg length.",
+   "they would not have a discrepancy in leg length."
+  ],
+  "answer": "A",
+  "consistent": false,
+  "direction": 1,
+  "model_output": "A. they could still have a discrepancy in leg length.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "Someone had an injury and a discrepancy in leg length. There were no other causes for the discrepancy in leg length. If they were not injured, then:",
+  "options": [
+   "they would not have a discrepancy in leg length.",
+   "they could still have a discrepancy in leg length."
+  ],
+  "answer": "B",
+  "consistent": false,
+  "direction": 1,
+  "model_output": "A. they would not have a discrepancy in leg length.",
+  "predicted_answer": "A",
+  "correct": false
+ },
+ {
+  "question": "Someone had an injury and a discrepancy in leg length. There were no other causes for the injury. If they did not have a discrepancy in leg length, then:",
+  "options": [
+   "they could still have an injury.",
+   "they would not have an injury."
+  ],
+  "answer": "B",
+  "consistent": false,
+  "direction": -1,
+  "model_output": "A. they could still have an injury.",
+  "predicted_answer": "A",
+  "correct": false
+ },
+ {
+  "question": "Someone had an injury and a discrepancy in leg length. There were no other causes for the injury. If they did not have a discrepancy in leg length, then:",
+  "options": [
+   "they would not have an injury.",
+   "they could still have an injury."
+  ],
+  "answer": "A",
+  "consistent": false,
+  "direction": -1,
+  "model_output": "B. they could still have an injury.",
+  "predicted_answer": "B",
+  "correct": false
+ },
+ {
+  "question": "Someone has separation anxiety and stress. There were no other causes for their stress. If they did not have separation anxiety, then:",
+  "options": [
+   "they could still have stress.",
+   "they would not have stress."
+  ],
+  "answer": "B",
+  "consistent": false,
+  "direction": 1,
+  "model_output": "A. they could still have stress.",
+  "predicted_answer": "A",
+  "correct": false
+ },
+ {
+  "question": "Someone has separation anxiety and stress. There were no other causes for their stress. If they did not have separation anxiety, then:",
+  "options": [
+   "they would not have stress.",
+   "they could still have stress."
+  ],
+  "answer": "A",
+  "consistent": false,
+  "direction": 1,
+  "model_output": "B. they could still have stress.",
+  "predicted_answer": "B",
+  "correct": false
+ },
+ {
+  "question": "Someone has separation anxiety and stress. There were no other causes for their separation anxiety. If they did not have stress, then:",
+  "options": [
+   "they could still have separation anxiety.",
+   "they would not have separation anxiety."
+  ],
+  "answer": "A",
+  "consistent": false,
+  "direction": -1,
+  "model_output": "A. they could still have separation anxiety.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "Someone has separation anxiety and stress. There were no other causes for their separation anxiety. If they did not have stress, then:",
+  "options": [
+   "they would not have separation anxiety.",
+   "they could still have separation anxiety."
+  ],
+  "answer": "B",
+  "consistent": false,
+  "direction": -1,
+  "model_output": "B. they could still have separation anxiety.",
+  "predicted_answer": "B",
+  "correct": true
+ },
+ {
+  "question": "There was a malfunction in the heating unit and a fire occurred. There were no other causes for the fire. If there were no malfunction in the heating unit, then:",
+  "options": [
+   "there could still be a fire.",
+   "there would be no fire."
+  ],
+  "answer": "B",
+  "consistent": false,
+  "direction": 1,
+  "model_output": "B. there would be no fire.",
+  "predicted_answer": "B",
+  "correct": true
+ },
+ {
+  "question": "There was a malfunction in the heating unit and a fire occurred. There were no other causes for the fire. If there were no malfunction in the heating unit, then:",
+  "options": [
+   "there would be no fire.",
+   "there could still be a fire."
+  ],
+  "answer": "A",
+  "consistent": false,
+  "direction": 1,
+  "model_output": "A. there would be no fire.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "There was a malfunction in the heating unit and a fire occurred. There were no other causes for the heating unit malfunction. If there were no fire, then:",
+  "options": [
+   "there could still be a heating unit malfunction.",
+   "there would not be a heating unit malfunction."
+  ],
+  "answer": "A",
+  "consistent": false,
+  "direction": -1,
+  "model_output": "A. there could still be a heating unit malfunction.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "There was a malfunction in the heating unit and a fire occurred. There were no other causes for the heating unit malfunction. If there were no fire, then:",
+  "options": [
+   "there would not be a heating unit malfunction.",
+   "there could still be a heating unit malfunction."
+  ],
+  "answer": "B",
+  "consistent": false,
+  "direction": -1,
+  "model_output": "B. there could still be a heating unit malfunction.",
+  "predicted_answer": "B",
+  "correct": true
+ },
+ {
+  "question": "Global warming occurred and there was an increase in the Earth's temperature. There were no other causes for the increase in Earth's temperature. If there were no global warming, then:",
+  "options": [
+   "there could still be an increase in the Earth's temperature.",
+   "there would be no increase in the Earth's temperature."
+  ],
+  "answer": "B",
+  "consistent": false,
+  "direction": 1,
+  "model_output": "A. there could still be an increase in the Earth's temperature.",
+  "predicted_answer": "A",
+  "correct": false
+ },
+ {
+  "question": "Global warming occurred and there was an increase in the Earth's temperature. There were no other causes for the increase in Earth's temperature. If there were no global warming, then:",
+  "options": [
+   "there would be no increase in the Earth's temperature.",
+   "there could still be an increase in the Earth's temperature."
+  ],
+  "answer": "A",
+  "consistent": false,
+  "direction": 1,
+  "model_output": "A. there would be no increase in the Earth's temperature.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "Global warming occurred and there was an increase in the Earth's temperature. There were no other causes for global warming. If there were no increase in the Earth's temperature, then:",
+  "options": [
+   "there could still be global warming.",
+   "there would be no global warming."
+  ],
+  "answer": "A",
+  "consistent": false,
+  "direction": -1,
+  "model_output": "A. there could still be global warming.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "Global warming occurred and there was an increase in the Earth's temperature. There were no other causes for global warming. If there were no increase in the Earth's temperature, then:",
+  "options": [
+   "there would be no global warming.",
+   "there could still be global warming."
+  ],
+  "answer": "B",
+  "consistent": false,
+  "direction": -1,
+  "model_output": "A. there would be no global warming.",
+  "predicted_answer": "A",
+  "correct": false
+ },
+ {
+  "question": "A fire occurred and a gas tank exploded. There were no other causes for the gas tank explosion. If there were no fire, then:",
+  "options": [
+   "the gas tank still could have exploded.",
+   "the gas tank would not have exploded."
+  ],
+  "answer": "A",
+  "consistent": false,
+  "direction": 1,
+  "model_output": "B. the gas tank would not have exploded.",
+  "predicted_answer": "B",
+  "correct": false
+ },
+ {
+  "question": "A fire occurred and a gas tank exploded. There were no other causes for the gas tank explosion. If there were no fire, then:",
+  "options": [
+   "the gas tank would not have exploded.",
+   "the gas tank still could have exploded."
+  ],
+  "answer": "B",
+  "consistent": false,
+  "direction": 1,
+  "model_output": "A. the gas tank would not have exploded.",
+  "predicted_answer": "A",
+  "correct": false
+ },
+ {
+  "question": "A fire occurred and a gas tank exploded. There were no other causes for the fire. If there were no gas tank explosion, then:",
+  "options": [
+   "there could still have been a fire.",
+   "there would not have been a fire."
+  ],
+  "answer": "B",
+  "consistent": false,
+  "direction": -1,
+  "model_output": "A. there could still have been a fire.",
+  "predicted_answer": "A",
+  "correct": false
+ },
+ {
+  "question": "A fire occurred and a gas tank exploded. There were no other causes for the fire. If there were no gas tank explosion, then:",
+  "options": [
+   "there would not have been a fire.",
+   "there could still have been a fire."
+  ],
+  "answer": "A",
+  "consistent": false,
+  "direction": -1,
+  "model_output": "A. there would not have been a fire.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "There was a drought and severe damage. There were no other causes for the severe damage. If there were no drought, then:",
+  "options": [
+   "there could still have been severe damage.",
+   "there would not have been severe damage."
+  ],
+  "answer": "B",
+  "consistent": false,
+  "direction": 1,
+  "model_output": "A. there could still have been severe damage.",
+  "predicted_answer": "A",
+  "correct": false
+ },
+ {
+  "question": "There was a drought and severe damage. There were no other causes for the severe damage. If there were no drought, then:",
+  "options": [
+   "there would not have been severe damage.",
+   "there could still have been severe damage."
+  ],
+  "answer": "A",
+  "consistent": false,
+  "direction": 1,
+  "model_output": "A. there would not have been severe damage.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "There was a drought and severe damage. There were no other causes for the draught. If there were no severe damage, then:",
+  "options": [
+   "there could still have been a drought.",
+   "there would not have been a drought."
+  ],
+  "answer": "A",
+  "consistent": false,
+  "direction": -1,
+  "model_output": "A. there could still have been a drought.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "There was a drought and severe damage. There were no other causes for the draught. If there were no severe damage, then:",
+  "options": [
+   "there would not have been a drought.",
+   "there could still have been a drought."
+  ],
+  "answer": "B",
+  "consistent": false,
+  "direction": -1,
+  "model_output": "A. there would not have been a drought.",
+  "predicted_answer": "A",
+  "correct": false
+ },
+ {
+  "question": "Someone experiences stress and has belly fat. There were no other causes for the belly fat. If there were no stress, then:",
+  "options": [
+   "there could still have been belly fat.",
+   "there would not have been any belly fat."
+  ],
+  "answer": "B",
+  "consistent": false,
+  "direction": 1,
+  "model_output": "A. there could still have been belly fat.",
+  "predicted_answer": "A",
+  "correct": false
+ },
+ {
+  "question": "Someone experiences stress and has belly fat. There were no other causes for the belly fat. If there were no stress, then:",
+  "options": [
+   "there would not have been any belly fat.",
+   "there could still have been belly fat."
+  ],
+  "answer": "A",
+  "consistent": false,
+  "direction": 1,
+  "model_output": "B. there could still have been belly fat.",
+  "predicted_answer": "B",
+  "correct": false
+ },
+ {
+  "question": "Someone experiences stress and has belly fat. There were no other causes for the stress. If they did not have belly fat, then:",
+  "options": [
+   "there could still have been stress.",
+   "there would not have been stress."
+  ],
+  "answer": "A",
+  "consistent": false,
+  "direction": -1,
+  "model_output": "A. there could still have been stress.",
+  "predicted_answer": "A",
+  "correct": true
+ },
+ {
+  "question": "Someone experiences stress and has belly fat. There were no other causes for the stress. If they did not have belly fat, then:",
+  "options": [
+   "there would not have been stress.",
+   "there could still have been stress."
+  ],
+  "answer": "B",
+  "consistent": false,
+  "direction": -1,
+  "model_output": "B. there could still have been stress.",
+  "predicted_answer": "B",
+  "correct": true
+ }
+]
