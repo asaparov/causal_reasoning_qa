@@ -350,7 +350,7 @@ if __name__ == "__main__":
 	first = True
 	for lf in causal_graph_lfs:
 		if args.logical_form:
-			sentence = fol_to_tptp(lf)
+			sentence = fol_to_tptp(lf) + '.'
 		else:
 			sentence = logical_form_to_clause(lf,
 				use_synonym_for_cause=args.use_synonym_for_cause,
@@ -368,7 +368,7 @@ if __name__ == "__main__":
 		first = True
 		for lf in negative_cause_lfs:
 			if args.logical_form:
-				sentence = fol_to_tptp(lf)
+				sentence = fol_to_tptp(lf) + '.'
 			else:
 				sentence = logical_form_to_clause(lf,
 					use_synonym_for_cause=args.use_synonym_for_cause,
@@ -386,7 +386,7 @@ if __name__ == "__main__":
 		stdout.write('\n\n') # optionally, add some text to mark the beginning of a new scenario
 		for lf in scenario:
 			if args.logical_form:
-				sentence = fol_to_tptp(lf)
+				sentence = fol_to_tptp(lf) + '.'
 			else:
 				sentence = logical_form_to_clause(lf,
 					use_synonym_for_cause=args.use_synonym_for_cause,
