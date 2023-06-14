@@ -1,0 +1,27 @@
+model: "EleutherAI/pythia-1.4b-deduped" # Name of the dataset from huggingface
+seed: 10 # Random seed for training
+dataset_path: "/scratch/nhj4247/causal_reasoning/data/synthetic/synthetic_vertices1000_10k.csv" # Your path to dataset file for finetuning
+test_data: "/scratch/nhj4247/causal_reasoning/data/synthetic/causal_discovery_test.csv" # Test dataset
+test_type: "gen" # prob: evaluates prob of yes and no answers, gen: generates an answer and computes accuracy
+max_seq_len: 512 # Maximum sequence length
+train_frac: 0.9 # Fraction of data for train, rest are val
+do_train: false
+do_eval: true
+
+train:  
+  bsize: 8 # Train batch size
+  eval_bsize: 8 # Evaluation batch size
+  lr: 1e-4 # Starting learning rate
+  weight_decay: 0.0 # Weight decay factor
+  warmup_steps: 10 # Steps to be used for LR warmup
+  max_steps: 1e4 # Number of iterations to execute during training (instead of epochs)
+  epochs: 5
+  eval_steps: 200
+  store_path: "/scratch/nhj4247/causal_reasoning/finetuned_models/pythia_1.4b_train9k" # Path to store the model checkpoints
+  init_path: "/scratch/nhj4247/causal_reasoning/finetuned_models/pythia_1.4b_train9k_1686672287/checkpoint-6000"
+
+# Set your Weights and Biases information if you want to log the data
+wandb:
+  use_wandb: true
+  entity: "joshinh"
+  wandb_project: "causal_reasoning"
