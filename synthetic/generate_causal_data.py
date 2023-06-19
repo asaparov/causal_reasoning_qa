@@ -69,7 +69,7 @@ def get_descendants(node):
 			queue.append(child)
 	return descendants
 
-def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edges, generate_negative_cause_edges, generate_non_occuring_events, generate_counterfactuals, generate_negative_counterfactuals, id_offset=0, mean_scenario_length=4):
+def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edges, generate_non_causal_relations, generate_negative_cause_edges, generate_non_occuring_events, generate_counterfactuals, generate_negative_counterfactuals, id_offset=0, mean_scenario_length=4):
 	# create a graph where the number of roots is num_vertices / 64, on average
 	num_roots = np.random.geometric(64 / num_vertices)
 	num_roots = min(num_roots, num_vertices / 16) # make sure there aren't too many roots
@@ -150,48 +150,49 @@ def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edg
 					lf = FOLFuncApplication("occur", [FOLConstant(event.name())])
 					scenario_lfs.append(lf)
 
-				# describe the temporal ordering of a subset of events
-				temporal_edges = set()
-				num_temporal_sources = np.random.binomial(len(event_chain), 0.5)
-				temporal_sources = sample(event_chain, num_temporal_sources)
-				for src in temporal_sources:
-					# sample another event either in any cluster
-					sampled_cluster = choice(occuring_events)
-					sampled_events, _ = sampled_cluster
-					if sampled_events == [src]:
-						continue
-					sampled_event = choice([event for event in sampled_events if event != src])
-					# determine which event happened first
-					if sampled_events == event_chain:
-						if event_chain.index(sampled_event) < event_chain.index(src):
-							first_event, second_event = sampled_event, src
+				if generate_non_causal_relations:
+					# describe the temporal ordering of a subset of events
+					temporal_edges = set()
+					num_temporal_sources = np.random.binomial(len(event_chain), 0.5)
+					temporal_sources = sample(event_chain, num_temporal_sources)
+					for src in temporal_sources:
+						# sample another event either in any cluster
+						sampled_cluster = choice(occuring_events)
+						sampled_events, _ = sampled_cluster
+						if sampled_events == [src]:
+							continue
+						sampled_event = choice([event for event in sampled_events if event != src])
+						# determine which event happened first
+						if sampled_events == event_chain:
+							if event_chain.index(sampled_event) < event_chain.index(src):
+								first_event, second_event = sampled_event, src
+							else:
+								first_event, second_event = src, sampled_event
 						else:
-							first_event, second_event = src, sampled_event
-					else:
-						if temporal_ordering.index(sampled_cluster) < temporal_ordering.index(event_cluster):
-							first_event, second_event = sampled_event, src
-						else:
-							first_event, second_event = src, sampled_event
-					temporal_edges.add((first_event, second_event))
-				for (src, dst) in temporal_edges:
-					lf = FOLFuncApplication("precede", [FOLConstant(src.name()), FOLConstant(dst.name())])
-					scenario_lfs.append(lf)
+							if temporal_ordering.index(sampled_cluster) < temporal_ordering.index(event_cluster):
+								first_event, second_event = sampled_event, src
+							else:
+								first_event, second_event = src, sampled_event
+						temporal_edges.add((first_event, second_event))
+					for (src, dst) in temporal_edges:
+						lf = FOLFuncApplication("precede", [FOLConstant(src.name()), FOLConstant(dst.name())])
+						scenario_lfs.append(lf)
 
-				# describe events that are co-located
-				num_colocated_sources = np.random.binomial(len(event_chain), 0.4)
-				colocated_sources = sample(event_chain, num_colocated_sources)
-				for src in colocated_sources:
-					# sample another event either in any cluster
-					sampled_cluster = choice(occuring_events)
-					sampled_events, _ = sampled_cluster
-					dst = choice(sampled_events)
-					# determine if the events are colocated
-					if sampled_events == event_chain:
-						lf = FOLFuncApplication("colocate", [FOLConstant(src.name()), FOLConstant(dst.name())])
-						scenario_lfs.append(lf)
-					else:
-						lf = FOLNot(FOLFuncApplication("colocate", [FOLConstant(src.name()), FOLConstant(dst.name())]))
-						scenario_lfs.append(lf)
+					# describe events that are co-located
+					num_colocated_sources = np.random.binomial(len(event_chain), 0.4)
+					colocated_sources = sample(event_chain, num_colocated_sources)
+					for src in colocated_sources:
+						# sample another event either in any cluster
+						sampled_cluster = choice(occuring_events)
+						sampled_events, _ = sampled_cluster
+						dst = choice(sampled_events)
+						# determine if the events are colocated
+						if sampled_events == event_chain:
+							lf = FOLFuncApplication("colocate", [FOLConstant(src.name()), FOLConstant(dst.name())])
+							scenario_lfs.append(lf)
+						else:
+							lf = FOLNot(FOLFuncApplication("colocate", [FOLConstant(src.name()), FOLConstant(dst.name())]))
+							scenario_lfs.append(lf)
 
 				# generate counterfactual examples
 				counterfactual_edges = set()
@@ -321,6 +322,7 @@ if __name__ == "__main__":
 	parser.add_argument("--num-scenarios", type=int, required=True)
 	parser.add_argument("--logical-form", type=parse_bool_arg, required=True, metavar="'y/n'")
 	parser.add_argument("--print-causal-graph", type=parse_bool_arg, required=True, metavar="'y/n'")
+	parser.add_argument("--generate-non-causal-relations", type=parse_bool_arg, required=True, metavar="'y/n'")
 	parser.add_argument("--generate-negative-cause-edges", type=parse_bool_arg, required=True, metavar="'y/n'")
 	parser.add_argument("--generate-non-occuring-events", type=parse_bool_arg, required=True, metavar="'y/n'")
 	parser.add_argument("--generate-counterfactuals", type=parse_bool_arg, required=True, metavar="'y/n'")
@@ -340,6 +342,7 @@ if __name__ == "__main__":
 		num_vertices=args.num_vertices,
 		num_scenarios=args.num_scenarios,
 		generate_cause_edges=args.print_causal_graph,
+        generate_non_causal_relations=args.generate_non_causal_relations,
 		generate_negative_cause_edges=args.generate_negative_cause_edges,
 		generate_non_occuring_events=args.generate_non_occuring_events,
 		generate_counterfactuals=args.generate_counterfactuals,
