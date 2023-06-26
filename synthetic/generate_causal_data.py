@@ -74,11 +74,12 @@ def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edg
 	num_roots = np.random.geometric(64 / num_vertices)
 	num_roots = min(num_roots, num_vertices / 16) # make sure there aren't too many roots
 	causal_graph = generate_graph(num_vertices, num_roots, id_offset)
+	roots = [v for v in causal_graph if len(v.parents) == 0]
 
 	causal_graph_lfs, negative_cause_lfs = [], []
 	if generate_cause_edges:
 		# print the causal graph
-		stack = causal_graph[:num_roots]
+		stack = roots[:]
 		visited = set()
 		while len(stack) != 0:
 			node = stack.pop()
@@ -119,7 +120,7 @@ def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edg
 		# sample a number of causally-disconnected sets of events
 		num_event_clusters = 1 + np.random.geometric(0.25)
 		num_event_clusters = min(num_event_clusters, num_roots)
-		event_clusters = [([root], get_descendants(root)) for root in sample(causal_graph[:num_roots], num_event_clusters)]
+		event_clusters = [([root], get_descendants(root)) for root in sample(roots, num_event_clusters)]
 		for event_cluster, cluster_descendants in event_clusters:
 			# sample a chain of events caused by the start_event
 			current_event = event_cluster[0]
