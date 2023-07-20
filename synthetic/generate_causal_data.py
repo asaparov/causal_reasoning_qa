@@ -58,15 +58,15 @@ def get_ancestors(node):
 	return descendants
 
 def get_descendants(node):
-	queue = [node]
+	queue = [(node, 0)]
 	descendants = set()
 	while len(queue) != 0:
-		node = queue.pop()
+		node, distance = queue.pop()
 		if node in descendants:
 			continue
-		descendants.add(node)
+		descendants.add((node, distance))
 		for child in node.children:
-			queue.append(child)
+			queue.append((child, distance + 1))
 	return descendants
 
 def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edges, generate_non_causal_relations, generate_negative_cause_edges, generate_non_occuring_events, generate_counterfactuals, generate_negative_counterfactuals, id_offset=0, mean_scenario_length=4):
@@ -113,25 +113,22 @@ def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edg
 	# as well, such as temporal ordering)
 	scenarios = []
 	while len(scenarios) < num_scenarios:
-		start_event = choice(causal_graph)
-		if len(start_event.children) == 0 or len(start_event.parents) == 0:
-			continue
 
 		# sample a number of causally-disconnected sets of events
 		num_event_clusters = 1 + np.random.geometric(0.25)
 		num_event_clusters = min(num_event_clusters, num_roots)
 		event_clusters = [([root], get_descendants(root)) for root in sample(roots, num_event_clusters)]
 		for event_cluster, cluster_descendants in event_clusters:
-			# sample a chain of events caused by the start_event
+			# sample a chain of events caused by the start event (event_cluster[0])
 			current_event = event_cluster[0]
-			while True:
+			max_distance = np.max([distance for _, distance in cluster_descendants])
+			scenario_length = randrange(max_distance) + 1
+			for _ in range(scenario_length):
 				valid_children = [child for child in current_event.children if all([child not in descendants for _, descendants in event_clusters if descendants != cluster_descendants])]
 				if len(valid_children) == 0:
 					break
 				current_event = choice(valid_children)
 				event_cluster.append(current_event)
-				if random() < 1.0 / mean_scenario_length:
-					break
 
 		# select a subset of event clusters that do not occur
 		num_non_occuring_events = np.random.binomial(num_event_clusters - 1, 0.2)
