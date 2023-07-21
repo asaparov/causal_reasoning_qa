@@ -7,6 +7,7 @@ class Node(object):
 		self.id = id
 		self.children = []
 		self.parents = []
+		self.types = []
 
 	def __str__(self):
 		return 'n(' + str(self.id) + ')'
@@ -16,6 +17,12 @@ class Node(object):
 
 	def name(self):
 		return "event" + str(self.id)
+
+def concat(lists):
+	concatenated = []
+	for l in lists:
+		concatenated += l
+	return concatenated
 
 def generate_graph(num_vertices, num_roots, id_offset=0, alpha=3.0):
 	vertices = []
@@ -45,17 +52,63 @@ def generate_graph(num_vertices, num_roots, id_offset=0, alpha=3.0):
 		vertices[i].id = id_offset + i
 	return vertices
 
+def generate_graph_with_types(num_vertices, num_roots, type_graph, id_offset=0, alpha=3.0):
+	vertices = []
+	for i in range(num_vertices):
+		vertices.append(Node(i))
+
+	# assign a type to each vertex, making sure each type is assigned at least one vertex
+	root_types = [t for t in type_graph if len(t.parents) == 0]
+	other_types = [t for t in type_graph if len(t.parents) != 0]
+	for i in range(len(root_types)):
+		vertices[i].types.append(root_types[i])
+	for i in range(len(root_types), num_roots):
+		vertices[i].types.append(choice(root_types))
+	for i in range(len(other_types)):
+		vertices[len(root_types) + i].types.append(other_types[i])
+	for i in range(len(type_graph), num_vertices):
+		vertices[i].types.append(choice(type_graph))
+
+	# sample edges between vertices according to the type graph
+	for i in range(num_roots, num_vertices):
+		# sample the number of parent vertices
+		num_parents = np.random.zipf(alpha)
+
+		parent_cause_types = vertices[i].types[0].parents
+		available_parents = concat([[v for v in vertices if v.types[0] == cause_type] for cause_type in parent_cause_types])
+		num_parents = min(len(available_parents), num_parents)
+
+		for parent in sample(available_parents, num_parents):
+			parent.children.append(vertices[i])
+			vertices[i].parents.append(parent)
+
+	# make sure each root has at least one child
+	roots = [v for v in vertices if len(v.parents) == 0]
+	for root in roots:
+		if len(root.children) == 0:
+			child_cause_types = root.types[0].children
+			available_children = concat([[v for v in vertices if v.types[0] == cause_type] for cause_type in child_cause_types])
+			node = choice(available_children)
+			root.children.append(node)
+			node.parents.append(root)
+
+	# remove any correlation between graph topology and vertex IDs by shuffling the vertices
+	shuffle(vertices)
+	for i in range(len(vertices)):
+		vertices[i].id = id_offset + i
+	return vertices
+
 def get_ancestors(node):
 	queue = [node]
-	descendants = set()
+	ancestors = set()
 	while len(queue) != 0:
 		node = queue.pop()
-		if node in descendants:
+		if node in ancestors:
 			continue
-		descendants.add(node)
+		ancestors.add(node)
 		for parent in node.parents:
 			queue.append(parent)
-	return descendants
+	return ancestors
 
 def get_descendants(node):
 	queue = [(node, 0)]
@@ -69,15 +122,84 @@ def get_descendants(node):
 			queue.append((child, distance + 1))
 	return descendants
 
-def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edges, generate_non_causal_relations, generate_negative_cause_edges, generate_non_occuring_events, generate_counterfactuals, generate_negative_counterfactuals, id_offset=0, mean_scenario_length=4):
+def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edges, generate_non_causal_relations, generate_negative_cause_edges, generate_non_occuring_events, generate_counterfactuals, generate_negative_counterfactuals, declare_types_in_scenarios, generate_causes_in_scenarios, generate_non_causes_in_scenarios, id_offset=0, generate_ontology=False):
+	if generate_ontology:
+		# generate an ontology of event types and their causal relations
+		cause_types = num_vertices // 8
+		event_type_causes = generate_graph(cause_types, cause_types // 4, id_offset)
+
+	# generate ontology of co-occuring event types
+	cooccurrence_type_count = num_vertices // 16
+	cooccurrence_types = []
+	for i in range(cooccurrence_type_count):
+		cooccurrence_types.append(Node(i))
+
 	# create a graph where the number of roots is num_vertices / 64, on average
 	num_roots = np.random.geometric(64 / num_vertices)
 	num_roots = min(num_roots, num_vertices / 16) # make sure there aren't too many roots
-	causal_graph = generate_graph(num_vertices, num_roots, id_offset)
+	if generate_ontology:
+		causal_graph = generate_graph_with_types(num_vertices, num_roots, event_type_causes, id_offset)
+	else:
+		causal_graph = generate_graph(num_vertices, num_roots, id_offset)
 	roots = [v for v in causal_graph if len(v.parents) == 0]
 
-	causal_graph_lfs, negative_cause_lfs = [], []
+	# assign a non-causal type to each event
+	for v in causal_graph:
+		ancestor_types = [a.types[-1] for a in get_ancestors(v) if len(a.types) != 0 and a.types[-1] in cooccurrence_types]
+		descendant_types = [d.types[-1] for d, _ in get_descendants(v) if len(d.types) != 0 and d.types[-1] in cooccurrence_types]
+		max_ancestor_type_index = -1 if len(ancestor_types) == 0 else max([cooccurrence_types.index(t) for t in ancestor_types])
+		min_descendant_type_index = len(cooccurrence_types) if len(descendant_types) == 0 else min([cooccurrence_types.index(t) for t in descendant_types])
+		available_cooccurrence_types = cooccurrence_types[(max_ancestor_type_index + 1):min_descendant_type_index]
+		if len(available_cooccurrence_types) == 0:
+			new_type = Node(len(cooccurrence_types))
+			cooccurrence_types.insert(max_ancestor_type_index + 1, new_type)
+			v.types.append(new_type)
+		else:
+			v.types.append(choice(available_cooccurrence_types))
+
+	# add temporal edges to the cooccurrence graph
+	for v in causal_graph:
+		parent_type = v.types[-1]
+		for child in v.children:
+			child_type = child.types[-1]
+			if child_type not in parent_type.children:
+				parent_type.children.append(child_type)
+				child_type.parents.append(parent_type)
+
+	# shuffle types to remove spurious correlations
+	if generate_ontology:
+		new_ids = list(range(len(event_type_causes) + len(cooccurrence_types)))
+		shuffle(new_ids)
+		for i in range(len(event_type_causes)):
+			event_type_causes[i].id = new_ids[i]
+		for i in range(len(cooccurrence_types)):
+			cooccurrence_types[i].id = new_ids[len(event_type_causes) + i]
+	else:
+		new_ids = list(range(len(cooccurrence_types)))
+		shuffle(new_ids)
+		for i in range(len(cooccurrence_types)):
+			cooccurrence_types[i].id = new_ids[i]
+
+	ontology_lfs, causal_graph_lfs, negative_cause_lfs = [], [], []
 	if generate_cause_edges:
+		# print the ontologies
+		if generate_ontology:
+			stack = [v for v in event_type_causes if len(v.parents) == 0]
+			visited = set()
+			while len(stack) != 0:
+				node = stack.pop()
+				if node in visited:
+					continue
+				visited.add(node)
+				for child in node.children:
+					lf = FOLFuncApplication("cause", [FOLConstant("eventtype%d" % node.id), FOLConstant("eventtype%d" % child.id)])
+					ontology_lfs.append(lf)
+
+		for v in causal_graph:
+			for t in v.types:
+				lf = FOLFuncApplication("has_type", [FOLConstant(v.name()), FOLConstant("eventtype%d" % t.id)])
+				ontology_lfs.append(lf)
+
 		# print the causal graph
 		stack = roots[:]
 		visited = set()
@@ -135,18 +257,51 @@ def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edg
 		non_occuring_events = sample(event_clusters, num_non_occuring_events)
 		occuring_events = [cluster for cluster in event_clusters if cluster not in non_occuring_events]
 
-		# of the occuring events clusters, sample a temporal ordering (for the `precede` relation)
-		temporal_ordering = occuring_events
-		shuffle(temporal_ordering)
-
 		scenario_lfs = []
 		for event_cluster in event_clusters:
 			event_chain, _ = event_cluster
+			if declare_types_in_scenarios:
+				for event in event_chain:
+					for t in event.types:
+						lf = FOLFuncApplication("has_type", [FOLConstant(event.name()), FOLConstant("eventtype%d" % t.id)])
+						scenario_lfs.append(lf)
+
 			if event_cluster in occuring_events:
 				# describe events that occur
 				for event in event_chain:
 					lf = FOLFuncApplication("occur", [FOLConstant(event.name())])
 					scenario_lfs.append(lf)
+
+				if generate_causes_in_scenarios:
+					num_causes = np.random.binomial(len(event_chain), 0.5)
+					available_indices = list(range(len(event_chain) - 1))
+					if num_causes > len(available_indices):
+						cause_indices = available_indices
+					else:
+						cause_indices = sample(available_indices, num_causes)
+					for cause_index in cause_indices:
+						# sample an event that is caused by this event
+						effect_index = randrange(cause_index + 1, len(event_chain))
+						lf = FOLFuncApplication("cause", [FOLConstant(event_chain[cause_index].name()), FOLConstant(event_chain[effect_index].name())])
+						scenario_lfs.append(lf)
+
+				if generate_non_causes_in_scenarios:
+					num_causes = np.random.binomial(len(event_chain), 0.5)
+					available_indices = list(range(1, len(event_chain)))
+					if num_causes > len(available_indices):
+						cause_indices = available_indices
+					else:
+						cause_indices = sample(available_indices, num_causes)
+					for cause_index in cause_indices:
+						# sample an event not caused by this event
+						sampled_cluster = choice(event_clusters)
+						sampled_events, _ = sampled_cluster
+						if sampled_events == event_chain:
+							other_event = event_chain[randrange(cause_index)]
+						else:
+							other_event = choice(sampled_events)
+						lf = FOLNot(FOLFuncApplication("cause", [FOLConstant(event_chain[cause_index].name()), FOLConstant(other_event.name())]))
+						scenario_lfs.append(lf)
 
 				if generate_non_causal_relations:
 					# describe the temporal ordering of a subset of events
@@ -167,10 +322,19 @@ def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edg
 							else:
 								first_event, second_event = src, sampled_event
 						else:
-							if temporal_ordering.index(sampled_cluster) < temporal_ordering.index(event_cluster):
-								first_event, second_event = sampled_event, src
-							else:
+							if src.types[-1] == sampled_event.types[-1]:
+								continue # the two events co-occur
+							elif src.types[-1] in get_ancestors(sampled_event.types[-1]):
+								# sampled_event must happen after src
 								first_event, second_event = src, sampled_event
+							elif sampled_event.types[-1] in get_ancestors(src.types[-1]):
+								# sampled_event must happen before src
+								first_event, second_event = sampled_event, src
+							elif choice([True, False]):
+								# the order doesn't matter so pick one randomly
+								first_event, second_event = src, sampled_event
+							else:
+								first_event, second_event = sampled_event, src
 						temporal_edges.add((first_event, second_event))
 					for (src, dst) in temporal_edges:
 						lf = FOLFuncApplication("precede", [FOLConstant(src.name()), FOLConstant(dst.name())])
@@ -185,7 +349,7 @@ def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edg
 						sampled_events, _ = sampled_cluster
 						dst = choice(sampled_events)
 						# determine if the events are colocated
-						if sampled_events == event_chain:
+						if sampled_events == event_chain or src.types[-1] == dst.types[-1]:
 							lf = FOLFuncApplication("colocate", [FOLConstant(src.name()), FOLConstant(dst.name())])
 							scenario_lfs.append(lf)
 						else:
@@ -235,7 +399,7 @@ def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edg
 
 		scenarios.append(scenario_lfs)
 
-	return causal_graph, causal_graph_lfs, negative_cause_lfs, scenarios
+	return causal_graph, ontology_lfs, causal_graph_lfs, negative_cause_lfs, scenarios
 
 def try_capitalize(sentence, capitalize):
 	if not capitalize:
@@ -269,6 +433,8 @@ def logical_form_to_clause(lf, use_synonym_for_cause, use_synonym_for_happen, us
 				clause = "if " + lf.operand.args[0].constant + " did not occur, and " + lf.operand.args[1].constant + " has no other causes, would " + lf.operand.args[1].constant + " occur? " + try_capitalize("yes", capitalize)
 			else:
 				clause = "if " + lf.operand.args[0].constant + " did not happen, and " + lf.operand.args[1].constant + " has no other causes, would " + lf.operand.args[1].constant + " happen? " + try_capitalize("yes", capitalize)
+		elif lf.operand.function == "has_type":
+			clause = lf.operand.args[0].constant + " is not a type of " + lf.operand.args[1].constant
 		else:
 			raise ValueError("Unsupported logical form.")
 	elif type(lf) == FOLFuncApplication:
@@ -297,6 +463,8 @@ def logical_form_to_clause(lf, use_synonym_for_cause, use_synonym_for_happen, us
 				clause = "if " + lf.args[0].constant + " did not occur, and " + lf.args[1].constant + " has no other causes, would " + lf.args[1].constant + " occur? " + try_capitalize("no", capitalize)
 			else:
 				clause = "if " + lf.args[0].constant + " did not happen, and " + lf.args[1].constant + " has no other causes, would " + lf.args[1].constant + " happen? " + try_capitalize("no", capitalize)
+		elif lf.function == "has_type":
+			clause = lf.args[0].constant + " is a type of " + lf.args[1].constant
 		else:
 			raise ValueError("Unsupported logical form.")
 	else:
@@ -320,23 +488,26 @@ if __name__ == "__main__":
 	parser.add_argument("--num-scenarios", type=int, required=True)
 	parser.add_argument("--logical-form", type=parse_bool_arg, required=True, metavar="'y/n'")
 	parser.add_argument("--print-causal-graph", type=parse_bool_arg, required=True, metavar="'y/n'")
+	parser.add_argument("--generate-causal-ontology", type=parse_bool_arg, required=True, metavar="'y/n'")
 	parser.add_argument("--generate-non-causal-relations", type=parse_bool_arg, required=True, metavar="'y/n'")
 	parser.add_argument("--generate-negative-cause-edges", type=parse_bool_arg, required=True, metavar="'y/n'")
 	parser.add_argument("--generate-non-occuring-events", type=parse_bool_arg, required=True, metavar="'y/n'")
 	parser.add_argument("--generate-counterfactuals", type=parse_bool_arg, required=True, metavar="'y/n'")
 	parser.add_argument("--generate-negative-counterfactuals", type=parse_bool_arg, required=True, metavar="'y/n'")
+	parser.add_argument("--declare-types-in-scenarios", type=parse_bool_arg, required=True, metavar="'y/n'")
+	parser.add_argument("--generate-causes-in-scenarios", type=parse_bool_arg, required=True, metavar="'y/n'")
+	parser.add_argument("--generate-non-causes-in-scenarios", type=parse_bool_arg, required=True, metavar="'y/n'")
 	parser.add_argument("--use-synonym-for-cause", type=parse_bool_arg, required=True, metavar="'y/n'")
 	parser.add_argument("--use-synonym-for-happen", type=parse_bool_arg, required=True, metavar="'y/n'")
 	parser.add_argument("--use-synonym-for-precede", type=parse_bool_arg, required=True, metavar="'y/n'")
 	parser.add_argument("--use-synonym-for-colocate", type=parse_bool_arg, required=True, metavar="'y/n'")
-	parser.add_argument("--mean-scenario-length", type=int, default=4)
 	parser.add_argument("--dont-capitalize", action='store_true')
 	parser.add_argument("--seed", type=int, default=62471893)
 	args = parser.parse_args()
 
 	seed(args.seed)
 	np.random.seed(args.seed)
-	causal_graph, causal_graph_lfs, negative_cause_lfs, scenarios = generate_graph_and_scenarios(
+	causal_graph, ontology_lfs, causal_graph_lfs, negative_cause_lfs, scenarios = generate_graph_and_scenarios(
 		num_vertices=args.num_vertices,
 		num_scenarios=args.num_scenarios,
 		generate_cause_edges=args.print_causal_graph,
@@ -345,11 +516,14 @@ if __name__ == "__main__":
 		generate_non_occuring_events=args.generate_non_occuring_events,
 		generate_counterfactuals=args.generate_counterfactuals,
 		generate_negative_counterfactuals=args.generate_negative_counterfactuals,
-		mean_scenario_length=args.mean_scenario_length)
+		declare_types_in_scenarios=args.declare_types_in_scenarios,
+		generate_causes_in_scenarios=args.generate_causes_in_scenarios,
+		generate_non_causes_in_scenarios=args.generate_non_causes_in_scenarios,
+		generate_ontology=args.generate_causal_ontology)
 
 	from sys import stdout
 	first = True
-	for lf in causal_graph_lfs:
+	for lf in ontology_lfs + causal_graph_lfs:
 		if args.logical_form:
 			sentence = fol_to_tptp(lf) + '.'
 		else:
