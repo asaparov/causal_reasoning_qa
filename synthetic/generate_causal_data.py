@@ -349,7 +349,9 @@ def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edg
 						sampled_events, _ = sampled_cluster
 						dst = choice(sampled_events)
 						# determine if the events are colocated
-						if sampled_events == event_chain or src.types[-1] == dst.types[-1]:
+						if src == dst:
+							continue
+						elif sampled_events == event_chain or src.types[-1] == dst.types[-1]:
 							lf = FOLFuncApplication("colocate", [FOLConstant(src.name()), FOLConstant(dst.name())])
 							scenario_lfs.append(lf)
 						else:
