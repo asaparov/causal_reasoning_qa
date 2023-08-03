@@ -35,9 +35,21 @@ def generate_graph(num_vertices, num_roots, id_offset=0, alpha=3.0):
 		num_parents = np.random.zipf(alpha)
 		num_parents = min(num_parents, i)
 
+		reachable_roots = []
 		for parent_id in sample(range(i), num_parents):
-			vertices[parent_id].children.append(vertices[i])
-			vertices[i].parents.append(vertices[parent_id])
+			# avoid creating a descendant of all root nodes
+			parent_roots = [a for a in get_ancestors(vertices[parent_id]) if len(a.parents) == 0]
+			add_parent = True
+			for parent_root in parent_roots:
+				if parent_root in reachable_roots:
+					continue
+				elif len(reachable_roots) + 1 == num_roots:
+					add_parent = False
+					break
+				reachable_roots.append(parent_root)
+			if add_parent:
+				vertices[parent_id].children.append(vertices[i])
+				vertices[i].parents.append(vertices[parent_id])
 
 	# make sure each root has at least one child
 	for root in vertices[:num_roots]:
@@ -78,9 +90,21 @@ def generate_graph_with_types(num_vertices, num_roots, type_graph, id_offset=0, 
 		available_parents = concat([[v for v in vertices if v.types[0] == cause_type] for cause_type in parent_cause_types])
 		num_parents = min(len(available_parents), num_parents)
 
+		reachable_roots = []
 		for parent in sample(available_parents, num_parents):
-			parent.children.append(vertices[i])
-			vertices[i].parents.append(parent)
+			# avoid creating a descendant of all root nodes
+			parent_roots = [a for a in get_ancestors(parent) if len(a.parents) == 0]
+			add_parent = True
+			for parent_root in parent_roots:
+				if parent_root in reachable_roots:
+					continue
+				elif len(reachable_roots) + 1 == num_roots:
+					add_parent = False
+					break
+				reachable_roots.append(parent_root)
+			if add_parent:
+				parent.children.append(vertices[i])
+				vertices[i].parents.append(parent)
 
 	# make sure each root has at least one child
 	roots = [v for v in vertices if len(v.parents) == 0]
@@ -125,7 +149,7 @@ def get_descendants(node):
 def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edges, generate_non_causal_relations, generate_negative_cause_edges, generate_non_occuring_events, generate_counterfactuals, generate_negative_counterfactuals, declare_types_in_scenarios, generate_causes_in_scenarios, generate_non_causes_in_scenarios, id_offset=0, generate_ontology=False):
 	if generate_ontology:
 		# generate an ontology of event types and their causal relations
-		cause_types = num_vertices // 8
+		cause_types = max(3, num_vertices // 8)
 		event_type_causes = generate_graph(cause_types, cause_types // 4, id_offset)
 
 	# generate ontology of co-occuring event types
@@ -136,7 +160,7 @@ def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edg
 
 	# create a graph where the number of roots is num_vertices / 64, on average
 	num_roots = np.random.geometric(64 / num_vertices)
-	num_roots = min(num_roots, num_vertices / 16) # make sure there aren't too many roots
+	num_roots = max(3, min(num_roots, num_vertices / 16)) # make sure there aren't too many roots
 	if generate_ontology:
 		causal_graph = generate_graph_with_types(num_vertices, num_roots, event_type_causes, id_offset)
 	else:
