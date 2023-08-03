@@ -71,7 +71,7 @@ def generate_graph_with_types(num_vertices, num_roots, type_graph, id_offset=0, 
 
 	# sample edges between vertices according to the type graph
 	for i in range(num_roots, num_vertices):
-		# sample the number of parent vertices
+		# sample the number of parent verticesevent86
 		num_parents = np.random.zipf(alpha)
 
 		parent_cause_types = vertices[i].types[0].parents
@@ -111,28 +111,16 @@ def get_ancestors(node):
 	return ancestors
 
 def get_descendants(node):
-	queue = [node]
-	descendants = set()
+	queue = [(node, 0, None)]
+	descendants = {}
 	while len(queue) != 0:
-		node = queue.pop()
+		node, distance, parent = queue.pop()
 		if node in descendants:
 			continue
-		descendants.add(node)
+		descendants[node] = (distance, parent)
 		for child in node.children:
-			queue.append(child)
+			queue.append((child, distance + 1, node))
 	return descendants
-
-def get_max_distance(node):
-	queue = [(node, 0)]
-	descendants = set()
-	while len(queue) != 0:
-		node, distance = queue.pop()
-		if node in descendants:
-			continue
-		descendants.add((node, distance))
-		for child in node.children:
-			queue.append((child, distance + 1))
-	return max([dist for _, dist in descendants])
 
 def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edges, generate_non_causal_relations, generate_negative_cause_edges, generate_non_occuring_events, generate_counterfactuals, generate_negative_counterfactuals, declare_types_in_scenarios, generate_causes_in_scenarios, generate_non_causes_in_scenarios, id_offset=0, generate_ontology=False):
 	if generate_ontology:
@@ -158,7 +146,7 @@ def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edg
 	# assign a non-causal type to each event
 	for v in causal_graph:
 		ancestor_types = [a.types[-1] for a in get_ancestors(v) if len(a.types) != 0 and a.types[-1] in cooccurrence_types]
-		descendant_types = [d.types[-1] for d in get_descendants(v) if len(d.types) != 0 and d.types[-1] in cooccurrence_types]
+		descendant_types = [d.types[-1] for d in get_descendants(v).keys() if len(d.types) != 0 and d.types[-1] in cooccurrence_types]
 		max_ancestor_type_index = -1 if len(ancestor_types) == 0 else max([cooccurrence_types.index(t) for t in ancestor_types])
 		min_descendant_type_index = len(cooccurrence_types) if len(descendant_types) == 0 else min([cooccurrence_types.index(t) for t in descendant_types])
 		available_cooccurrence_types = cooccurrence_types[(max_ancestor_type_index + 1):min_descendant_type_index]
@@ -251,17 +239,30 @@ def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edg
 		# sample a number of causally-disconnected sets of events
 		num_event_clusters = 1 + np.random.geometric(0.25)
 		num_event_clusters = min(num_event_clusters, num_roots)
-		event_clusters = [([root], get_descendants(root), get_max_distance(root)) for root in sample(roots, num_event_clusters)]
-		for event_cluster, cluster_descendants, max_distance in event_clusters:
-			# sample a chain of events caused by the start event (event_cluster[0])
-			current_event = event_cluster[0]
+		event_clusters = [([root], get_descendants(root)) for root in sample(roots, num_event_clusters)]
+		for event_cluster, cluster_descendants in event_clusters:
+			available_descendants = {}
+			for descendant, (distance, parent) in cluster_descendants.items():
+				if distance not in available_descendants:
+					available_descendants[distance] = [(descendant, parent)]
+				else:
+					available_descendants[distance].append((descendant, parent))
+			max_distance = max(available_descendants.keys())
 			scenario_length = randrange(max_distance) + 1
-			for _ in range(scenario_length):
-				valid_children = [child for child in current_event.children if all([child not in descendants for _, descendants, _ in event_clusters if descendants != cluster_descendants])]
-				if len(valid_children) == 0:
+
+			while True:
+				available_endpoints = [descendant for descendant, _ in available_descendants[scenario_length] if all([descendant not in descendants for _, descendants in event_clusters if descendants != cluster_descendants])]
+				if len(available_endpoints) != 0:
 					break
-				current_event = choice(valid_children)
-				event_cluster.append(current_event)
+				scenario_length -= 1
+			endpoint = choice(available_endpoints)
+			new_event_cluster = [endpoint]
+			while True:
+				_, parent = cluster_descendants[new_event_cluster[-1]]
+				if parent == None:
+					break
+				new_event_cluster.append(parent)
+			event_cluster += new_event_cluster[-2::-1]
 
 		# select a subset of event clusters that do not occur
 		num_non_occuring_events = np.random.binomial(num_event_clusters - 1, 0.2)
@@ -270,7 +271,7 @@ def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edg
 
 		scenario_lfs = []
 		for event_cluster in event_clusters:
-			event_chain, _, _ = event_cluster
+			event_chain, _ = event_cluster
 			if declare_types_in_scenarios:
 				for event in event_chain:
 					for t in event.types:
@@ -306,7 +307,7 @@ def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edg
 					for cause_index in cause_indices:
 						# sample an event not caused by this event
 						sampled_cluster = choice(event_clusters)
-						sampled_events, _, _ = sampled_cluster
+						sampled_events, _ = sampled_cluster
 						if sampled_events == event_chain:
 							other_event = event_chain[randrange(cause_index)]
 						else:
@@ -322,7 +323,7 @@ def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edg
 					for src in temporal_sources:
 						# sample another event either in any cluster
 						sampled_cluster = choice(occuring_events)
-						sampled_events, _, _ = sampled_cluster
+						sampled_events, _ = sampled_cluster
 						if sampled_events == [src]:
 							continue
 						sampled_event = choice([event for event in sampled_events if event != src])
@@ -357,7 +358,7 @@ def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edg
 					for src in colocated_sources:
 						# sample another event either in any cluster
 						sampled_cluster = choice(occuring_events)
-						sampled_events, _, _ = sampled_cluster
+						sampled_events, _ = sampled_cluster
 						dst = choice(sampled_events)
 						# determine if the events are colocated
 						if src == dst:
@@ -393,7 +394,7 @@ def generate_graph_and_scenarios(num_vertices, num_scenarios, generate_cause_edg
 				for src in counterfactual_sources:
 					# sample another event either in any cluster
 					sampled_cluster = choice(occuring_events)
-					sampled_events, _, _ = sampled_cluster
+					sampled_events, _ = sampled_cluster
 					dst = choice(sampled_events)
 					if sampled_events == event_chain and event_chain.index(src) < event_chain.index(dst):
 						if generate_counterfactuals:
