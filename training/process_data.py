@@ -115,9 +115,24 @@ def get_descendants(graph):
             descendant_set[node] = set()
             
     return descendant_set
+
+
+def get_2_hop(graph):
+    
+    descendant_set = {}
+    topological_order = iterative_topological_sort(graph)
+    for node in topological_order:
+        descendant_set[node] = []
+        if node in graph:
+            for child in graph[node]:
+                if child in graph:
+                    for grandchild in graph[child]:
+                        descendant_set[node].append(grandchild)
+                        
+    return descendant_set
     
 
-def create_transitivity_test(input_file, output_file, framing="default", options=False, ontology=False):
+def create_transitivity_test(input_file, output_file, num_hops=-1, framing="default", options=False, ontology=False):
     
     with open(input_file, 'r') as f:
         data = f.readlines()
@@ -139,8 +154,11 @@ def create_transitivity_test(input_file, output_file, framing="default", options
         else:
             out_nodes[edge[0]] = [edge[1]]
             
-    # obtain all descendants            
-    descendant_set = get_descendants(out_nodes)
+    # obtain all descendants 
+    if num_hops == -1:
+        descendant_set = get_descendants(out_nodes)
+    elif num_hops == 2:
+        descendant_set = get_2_hop(out_nodes)
             
     # Remove the original edges to create transitive set
     transitive_edges = []
@@ -294,7 +312,7 @@ def create_balanced_data(input_file, output_file):
     data_balanced.to_csv(output_file, index=False)
 
 
-def create_type_generalization_test(input_file, output_file, source=True, target=False, framing="default", options=False):
+def create_type_generalization_test(input_file, output_file, source=True, target=False, ood_events=False, framing="default", options=False):
     
     with open(input_file, 'r') as f:
         data = f.readlines()
@@ -339,26 +357,62 @@ def create_type_generalization_test(input_file, output_file, source=True, target
                 event_to_type[node].append(node_type)
             else:
                 event_to_type[node] = [node_type]
+                
+    # ood events -- create new events as neighbours instead of existing events
+    if ood_events:
+
+        # Gather all events
+        all_nodes = set()
+        all_nodes.update(list(out_nodes.keys()))
+        all_nodes.update([x for val in out_nodes.values() for x in val])
+        all_nodes = [int(x[5:]) for x in list(all_nodes)]
+        max_event = max(all_nodes)
         
-    # create neg edges -- i.e. edges between nodes of same non-causal type as an an actual edge
-    # make sure the new edge is not possible (e.g. actual edge or transitivity)
-    neg_edges = []
-    ref_edges = []
-    for edge in graph_edges:
-        if source:
-            for edge_type in event_to_type[edge[0]]:
-                for neighbour_node in type_to_event[edge_type]:
-                    if neighbour_node != edge[0] and (neighbour_node not in descendant_set or edge[1] not in descendant_set[neighbour_node]):
-                        neg_edges.append([neighbour_node, edge[1]])
-                        ref_edges.append([edge[0], edge[1]])
-                        
-        if target:
-            for edge_type in event_to_type[edge[1]]:
-                for neighbour_node in type_to_event[edge_type]:
-                    if neighbour_node != edge[1] and neighbour_node not in descendant_set[edge[0]]:
-                        neg_edges.append([edge[0], neighbour_node])
-                        ref_edges.append([edge[0], edge[1]])
-                        
+        neg_edges = []
+        ref_edges = []
+        prefixes = []
+        for edge in graph_edges:
+            if source:
+                for edge_type in event_to_type[edge[0]]:
+                    new_event = 'event' + str(max_event + 1)
+                    neg_edges.append([new_event, edge[1]])
+                    ref_edges.append([edge[0], edge[1]])
+                    prefixes.append(new_event + " is a type of " + edge_type + ". ")
+                    max_event += 1
+                    
+            if target:
+                for edge_type in event_to_type[edge[1]]:
+                    new_event = 'event' + str(max_event + 1)
+                    neg_edges.append([edge[0], new_event])
+                    ref_edges.append([edge[0], edge[1]])
+                    prefixes.append(new_event + " is a type of " + edge_type + ". ")
+                    max_event += 1
+        
+    
+    else:
+    
+        # create neg edges -- i.e. edges between nodes of same non-causal type as an an actual edge
+        # make sure the new edge is not possible (e.g. actual edge or transitivity)
+        neg_edges = []
+        ref_edges = []
+        prefixes = []
+        for edge in graph_edges:
+            if source:
+                for edge_type in event_to_type[edge[0]]:
+                    for neighbour_node in type_to_event[edge_type]:
+                        if neighbour_node != edge[0] and (neighbour_node not in descendant_set or edge[1] not in descendant_set[neighbour_node]):
+                            neg_edges.append([neighbour_node, edge[1]])
+                            ref_edges.append([edge[0], edge[1]])
+                            prefixes.append("")
+
+            if target:
+                for edge_type in event_to_type[edge[1]]:
+                    for neighbour_node in type_to_event[edge_type]:
+                        if neighbour_node != edge[1] and neighbour_node not in descendant_set[edge[0]]:
+                            neg_edges.append([edge[0], neighbour_node])
+                            ref_edges.append([edge[0], edge[1]])
+                            prefixes.append("")
+
     
     if options:
         test_data = {"option1": [], "option2": [], "answer": []}
@@ -371,12 +425,12 @@ def create_type_generalization_test(input_file, output_file, source=True, target
 
         for j in range(len(neg_edges)):
             if framing == "default":
-                option1 = option1_template.format(cause=neg_edges[j][0], effect=neg_edges[j][1])
-                option2 = option2_template.format(cause=neg_edges[j][0], effect=neg_edges[j][1])
+                option1 = prefixes[j] + option1_template.format(cause=neg_edges[j][0], effect=neg_edges[j][1])
+                option2 = prefixes[j] + option2_template.format(cause=neg_edges[j][0], effect=neg_edges[j][1])
                 answer = "option2"
             elif framing == "reference":
-                option1 = option1_template.format(cause=ref_edges[j][0], effect=ref_edges[j][1])
-                option2 = option2_template.format(cause=neg_edges[j][0], effect=neg_edges[j][1])
+                option1 = prefixes[j] + option1_template.format(cause=ref_edges[j][0], effect=ref_edges[j][1])
+                option2 = prefixes[j] + option2_template.format(cause=neg_edges[j][0], effect=neg_edges[j][1])
                 answer = "option1"
                 
             test_data["option1"].append(option1)
@@ -386,6 +440,7 @@ def create_type_generalization_test(input_file, output_file, source=True, target
         test_data = pd.DataFrame(test_data)
         test_data.to_csv(output_file, index=False)  
     else:
+        
         test_data = []
         if framing == "default":
             qa_template = "Answer yes or no. Can {cause} cause {effect}?"
@@ -412,8 +467,6 @@ if __name__ == "__main__":
     parser.add_argument("--create_transitivity_test", action="store_true")
     parser.add_argument("--create_neg_edges_test", action="store_true")
     parser.add_argument("--create_balanced_data", action="store_true")
-    parser.add_argument("--create_causal_graph_test_options", action="store_true")
-    parser.add_argument("--create_transitivity_test_options", action="store_true")
     parser.add_argument("--create_type_generalization_test", action="store_true")
     parser.add_argument("--framing", type=str, default="default")
     parser.add_argument("--options", action="store_true")
@@ -421,7 +474,8 @@ if __name__ == "__main__":
     parser.add_argument("--ontology", action="store_true", help="create graph/edges over types instead of events")
     parser.add_argument("--source", action="store_true", help="source type generalization")
     parser.add_argument("--target", action="store_true", help="target type generalization")
-    
+    parser.add_argument("--ood_events", action="store_true", help="use new events for src/tgt type generalization tests")
+    parser.add_argument("--hops", type=int, default=-1)
     
     args = parser.parse_args()
     
@@ -435,7 +489,7 @@ if __name__ == "__main__":
         create_causal_graph_test(args.data_path, args.save_path, args.framing, args.options, args.ontology)
     
     if args.create_transitivity_test:
-        create_transitivity_test(args.data_path, args.save_path, args.framing, args.options, args.ontology)
+        create_transitivity_test(args.data_path, args.save_path, args.hops, args.framing, args.options, args.ontology)
         
     if args.create_neg_edges_test:
         create_neg_edges_test(args.data_path, args.save_path, args.framing)
@@ -444,7 +498,7 @@ if __name__ == "__main__":
         create_balanced_data(args.data_path, args.save_path)
         
     if args.create_type_generalization_test:
-        create_type_generalization_test(args.data_path, args.save_path, args.source, args.target, args.framing, args.options)
+        create_type_generalization_test(args.data_path, args.save_path, args.source, args.target, args.ood_events, args.framing, args.options)
     
     
     
